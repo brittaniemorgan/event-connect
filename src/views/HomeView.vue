@@ -4,13 +4,14 @@
     <section class="hero">
       <div class="hero-content">
         <h1>Discover Events Around You</h1>
-        <p>Find and attend the best events in your city.</p>
+        <p style="color: #0a6320;font-weight: 600;">Find and attend the best events in your city.</p>
         <input type="text" v-model="searchQuery" placeholder="Search for events..." />
-        <button @click="searchEvents">Search</button>
+        <button @click="searchEvents" class="btn-primary">Search</button>
       </div>
     </section>
 
     <!-- Filter Section -->
+    <!--
     <section class="filters">
       <label for="category">Category:</label>
       <select v-model="selectedCategory" @change="updateFilter('category', selectedCategory)">
@@ -26,13 +27,15 @@
       <label for="date">Date:</label>
       <input type="date" v-model="selectedDate" @change="updateFilter('date', selectedDate)" />
     </section>
+  -->
 
     <!-- Featured Events Section -->
     <section class="featured-events">
       <h2>Featured Events</h2>
       <div class="event-list">
         <EventCard v-for="event in filteredEvents" :key="event.id" :event="event" />
-      </div>
+      </div>      
+      <button @click="searchEvents" class="btn-primary">View All Events</button>
     </section>
   </div>
 </template>
@@ -90,16 +93,17 @@ export default {
 
 
 <style scoped>
-.home {
-  padding: 20px;
+
+div{
+  padding-bottom: 20px;
 }
 
-.hero {
-  /*background: url('g') center/cover no-repeat; */
+.hero {  
+  background: linear-gradient(rgba(237, 237, 237, 0.5), rgba(237, 237, 237, 0.5)),
+              url('../assets/common-bg.svg') center/cover no-repeat;
   color: white;
   text-align: center;
-  padding: 50px 20px;
-  border-radius: 8px;
+  padding: 50px 20px 200px;
 }
 
 .hero-content h1 {
@@ -120,7 +124,7 @@ export default {
   margin-right: 10px;
 }
 
-.hero-content button {
+.btn-primary {
   padding: 10px 20px;
   border-radius: 4px;
   border: none;
@@ -131,12 +135,13 @@ export default {
 
 .featured-events {
   margin-top: 40px;
+  text-align: center;
 }
 
 .event-list {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: flex-start;
 }
 
 

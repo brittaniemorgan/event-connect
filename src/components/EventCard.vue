@@ -1,6 +1,6 @@
 <template>
     <div class="event-card">
-      <img :src="event.image" :alt="event.title" />
+      <img :src="getImagePath(event.image)" :alt="event.title" />
       <div class="event-info">
         <h3>{{ event.title }}</h3>
         <p>{{ event.date }} - {{ event.location }}</p>
@@ -16,7 +16,16 @@
         type: Object,
         required: true,
       },
-    },
+    }, 
+    methods: {
+    getImagePath(imageName) {
+      try {
+        return require(`../assets/event_images/${imageName}`);
+      } catch (e) {
+        return require('../assets/event_images/fallback_image.png');
+      }
+    }
+  }
   };
   </script>
   

@@ -1,7 +1,7 @@
 export const mockEvents = [
-  { id: 1, title: "Rock Concert", date: "2024-09-15", location: "Downtown Arena", category: "Music" },
-  { id: 2, title: "Art Exhibition", date: "2024-10-01", location: "City Gallery", category: "Art" },
-  { id: 3, title: "Food Festival", date: "2024-09-22", location: "Central Park", category: "Food & Drink" },
+  { id: 1, title: "Rock Concert", date: "2024-09-15", location: "Downtown Arena", category: "Music", image: "1.jpeg" },
+  { id: 2, title: "Art Exhibition", date: "2024-10-01", location: "City Gallery", category: "Art", image: "2.jpeg" },
+  { id: 3, title: "Food Festival", date: "2024-09-22", location: "Central Park", category: "Food & Drink", image: "3.jpeg"},
   { id: 4, title: "Tech Conference", date: "2024-11-05", location: "Convention Center", category: "Technology" },
   { id: 5, title: "Comedy Night", date: "2024-09-30", location: "Laugh Lounge", category: "Theater" },
   { id: 6, title: "Film Screening", date: "2024-10-10", location: "Movie House", category: "Art" },

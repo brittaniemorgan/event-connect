@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
         <h1>Discover Events Around You</h1>
@@ -10,32 +9,14 @@
       </div>
     </section>
 
-    <!-- Filter Section -->
-    <!--
-    <section class="filters">
-      <label for="category">Category:</label>
-      <select v-model="selectedCategory" @change="updateFilter('category', selectedCategory)">
-        <option value="">All Categories</option>
-        <option v-for="category in categories" :key="category.id" :value="category.name">
-          {{ category.name }}
-        </option>
-      </select>
-
-      <label for="location">Location:</label>
-      <input type="text" v-model="selectedLocation" @input="updateFilter('location', selectedLocation)" placeholder="Enter location..." />
-
-      <label for="date">Date:</label>
-      <input type="date" v-model="selectedDate" @change="updateFilter('date', selectedDate)" />
-    </section>
-  -->
-
-    <!-- Featured Events Section -->
     <section class="featured-events">
       <h2>Featured Events</h2>
       <div class="event-list">
         <EventCard v-for="event in filteredEvents" :key="event.id" :event="event" />
-      </div>      
-      <button @click="searchEvents" class="btn-primary">View All Events</button>
+      </div>
+      <router-link to="/events" class="nav-link">
+        <button class="btn-primary">View All Events </button>
+      </router-link>
     </section>
   </div>
 </template>
@@ -93,14 +74,13 @@ export default {
 
 
 <style scoped>
-
-div{
+div {
   padding-bottom: 20px;
 }
 
-.hero {  
+.hero {
   background: linear-gradient(rgba(237, 237, 237, 0.5), rgba(237, 237, 237, 0.5)),
-              url('../assets/common-bg.svg') center/cover no-repeat;
+    url('../assets/common-bg.svg') center/cover no-repeat;
   color: white;
   text-align: center;
   padding: 50px 20px 200px;
@@ -128,7 +108,7 @@ div{
   padding: 10px 20px;
   border-radius: 4px;
   border: none;
-  background-color: #0a6320; 
+  background-color: #0a6320;
   color: white;
   cursor: pointer;
 }

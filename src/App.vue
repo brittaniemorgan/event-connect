@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <!-- Navigation Bar -->
     <nav class="navbar">
       <div class="container">
         <router-link to="/" class="navbar-brand">Event Connect</router-link>
@@ -20,12 +19,7 @@
         </ul>
       </div>
     </nav>
-    
-
-    <!-- Router View to Render the Pages -->
     <router-view></router-view>
-
-    <!-- Footer -->
     <footer class="footer">
       <div class="container">
         <p>&copy; 2024 Event Connect. All rights reserved.</p>

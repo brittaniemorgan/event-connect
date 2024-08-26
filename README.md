@@ -1,5 +1,7 @@
 # event-connect
 
+## [Demo Link](https://eventconnect.netlify.app/)
+
 ## Project setup
 ```
 npm install

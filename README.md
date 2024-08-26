@@ -1,4 +1,4 @@
-# event-connect
+# Event Connect
 
 ## [Demo Link](https://eventconnect.netlify.app/)
 

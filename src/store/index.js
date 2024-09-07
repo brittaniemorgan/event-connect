@@ -1,7 +1,9 @@
 import { createStore } from 'vuex';
 import eventService from '../services/eventService';
+import { auth } from './auth'
 
 export default createStore({
+  modules:{auth},
   state() {
     return {
       events: [],

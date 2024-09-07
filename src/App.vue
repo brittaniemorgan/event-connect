@@ -16,10 +16,19 @@
           <li class="nav-item">
             <router-link to="/contact" class="nav-link">Contact</router-link>
           </li>
+          <li class="nav-item" v-if="isAuthenticated">
+            <button @click="handleLogout" class="btn-secondary">Logout</button>
+          </li>
+          <li class="nav-item" v-else>
+            <router-link to="/login" class="btn-secondary">Sign In</router-link>
+          </li>
         </ul>
       </div>
     </nav>
-    <router-view></router-view>
+    <template v-if="currentUser">
+      <p class="greeting">Welcome, {{ currentUser.name }}!</p>
+    </template>
+    <router-view class="content"></router-view>
     <footer class="footer">
       <div class="container">
         <p>&copy; 2024 Event Connect. All rights reserved.</p>
@@ -29,8 +38,22 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   name: "App",
+  computed: {
+    ...mapGetters(['isAuthenticated', 'currentUser']),
+  },
+  methods: {
+    ...mapActions(['logout']),
+    
+    handleLogout() {
+      this.logout().then(() => {
+        this.$router.push('/');
+      })
+    }
+  },
 };
 </script>
 
@@ -40,10 +63,17 @@ export default {
   color: #333;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex-grow: 1;
 }
 
 .navbar {
-  background-color: #0a6320; 
+  background-color: #0a6320;
   padding: 10px 20px;
 }
 
@@ -52,6 +82,7 @@ export default {
   justify-content: space-between;
   align-items: center;
 }
+
 
 .navbar-brand {
   font-size: 1.5em;
@@ -64,6 +95,7 @@ export default {
   list-style: none;
   padding: 0;
   margin: 0;
+  align-items: center;
 }
 
 .navbar-nav .nav-item {
@@ -77,9 +109,31 @@ export default {
 }
 
 .navbar-nav .nav-link:hover {
-  text-decoration: underline;
+  opacity: 0.8;
 }
 
+.btn-secondary {
+  background-color: white;
+  font-size: 0.9rem;
+  color: #0a6320;
+  border: 2px solid #0a6320;
+  padding: 8px 16px; 
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  opacity: 0.8;
+  text-decoration: none;
+}
+
+.greeting{
+  padding: 15px;
+  padding-top: 0px;
+  font-size: 1.5em; 
+  color: #0a6320; 
+  font-weight: bold;
+}
 
 .footer {
   background-color: #0a6320;

@@ -19,3 +19,11 @@ export const mockCategories = [
   { id: 7, name: "Workshops" },
   { id: 8, name: "Charity" },
 ];
+
+export const mockUsers = [
+  { id: 1, name: "Alice Johnson", email: "alice.johnson@example.com", password: "password123", role: "user" },
+  { id: 2, name: "Bob Smith", email: "bob.smith@example.com", password: "password123", role: "user" },
+  { id: 3, name: "Charlie Brown", email: "charlie.brown@example.com", password: "password123", role: "user" },
+  { id: 4, name: "Diana Prince", email: "diana.prince@example.com", password: "password123", role: "admin" },
+  { id: 5, name: "Evan Williams", email: "evan.williams@example.com", password: "password123", role: "admin" },
+];

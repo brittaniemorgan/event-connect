@@ -5,7 +5,7 @@
         <h1>Discover Events Around You</h1>
         <p style="color: #0a6320;font-weight: 600;">Find and attend the best events in your city.</p>
         <input type="text" v-model="searchQuery" placeholder="Search for events..." />
-        <button @click="searchEvents" class="btn-primary">Search</button>
+        <button class="btn-primary">Search</button>
       </div>
     </section>
 
@@ -33,9 +33,6 @@ export default {
   data() {
     return {
       searchQuery: "",
-      selectedCategory: "",
-      selectedLocation: "",
-      selectedDate: ""
     };
   },
   computed: {
@@ -48,22 +45,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchEvents', 'fetchCategories']),
-    updateFilter(filterType, value) {
-      switch (filterType) {
-        case 'category':
-          this.$store.commit('setSelectedCategory', value);
-          break;
-        case 'location':
-          this.$store.commit('setSelectedLocation', value);
-          break;
-        case 'date':
-          this.$store.commit('setSelectedDate', value);
-          break;
-      }
-    },
-    searchEvents() {
-      console.log("Searching for:", this.searchQuery);
-    }
   },
   created() {
     this.fetchEvents();

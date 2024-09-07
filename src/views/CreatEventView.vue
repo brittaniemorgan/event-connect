@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: "CreateEventView",
@@ -64,9 +64,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(['categories'])
+    ...mapGetters(['categories'])
   },
   methods: {
+    ...mapActions(['fetchCategories', 'addEvent']),
     onFileChange(event) {
       const file = event.target.files[0];
       this.form.image = file;
@@ -82,7 +83,7 @@ export default {
       };
 
       try {
-        await this.$store.dispatch('addEvent', newEvent);
+        await this.addEvent(newEvent)
         this.message = 'Event added successfully!';
         this.isSuccess = true;
         this.resetForm();
@@ -104,7 +105,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('fetchCategories');
+    this.fetchCategories();
   }
 };
 </script>

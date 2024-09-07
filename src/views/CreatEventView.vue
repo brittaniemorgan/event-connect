@@ -1,25 +1,28 @@
 <template>
   <div class="create-event">
-    <h1>Create New Event</h1>
-    <form @submit.prevent="handleSubmit">
-      <div class="form-group">
-        <label for="title">Event Title</label>
-        <input type="text" v-model="event.title" id="title" required />
+    <h1>Create a New Event</h1>
+    <div v-if="message" :class="{ success: isSuccess, error: !isSuccess }" class="flash-message">
+        {{ message }}
       </div>
-      
+    <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="date">Event Date</label>
-        <input type="date" v-model="event.date" id="date" required />
+        <label for="title">Event Title:</label>
+        <input type="text" v-model="form.title" id="title" required />
       </div>
 
       <div class="form-group">
-        <label for="location">Location</label>
-        <input type="text" v-model="event.location" id="location" required />
+        <label for="date">Event Date:</label>
+        <input type="date" v-model="form.date" id="date" required />
       </div>
 
       <div class="form-group">
-        <label for="category">Category</label>
-        <select v-model="event.category" id="category" required>
+        <label for="location">Location:</label>
+        <input type="text" v-model="form.location" id="location" required />
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <select v-model="form.category" id="category" required>
           <option v-for="category in categories" :key="category.id" :value="category.name">
             {{ category.name }}
           </option>
@@ -27,55 +30,82 @@
       </div>
 
       <div class="form-group">
-        <label for="description">Description</label>
-        <textarea v-model="event.description" id="description" rows="4" required></textarea>
+        <label for="description">Event Description:</label>
+        <textarea v-model="form.description" id="description" required></textarea>
       </div>
 
-      <button type="submit" class="btn btn-primary">Create Event</button>
+      <div class="form-group">
+        <label for="image">Event Image:</label>
+        <input type="file" @change="onFileChange" id="image" ref="imageInput" />
+      </div>
+
+      <button type="submit" class="btn-primary">Create Event</button>
     </form>
   </div>
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 
 export default {
   name: "CreateEventView",
   data() {
     return {
-      event: {
+      form: {
         title: '',
         date: '',
         location: '',
         category: '',
-        description: ''
-      }
+        description: '',
+        image: null
+      },
+      message: '',
+      isSuccess: false
     };
   },
   computed: {
-    ...mapGetters(['categories']),
+    ...mapState(['categories'])
   },
   methods: {
-    ...mapActions(['createEvent', 'fetchCategories']),
-    async handleSubmit() {
-      if (this.validateForm()) {
-        await this.createEvent(this.event);
-        this.$router.push('/events');
+    onFileChange(event) {
+      const file = event.target.files[0];
+      this.form.image = file;
+    },
+    async submitForm() {
+      const newEvent = {
+        title: this.form.title,
+        date: this.form.date,
+        location: this.form.location,
+        category: this.form.category,
+        description: this.form.description,
+        image: this.form.image
+      };
+
+      try {
+        await this.$store.dispatch('addEvent', newEvent);
+        this.message = 'Event added successfully!';
+        this.isSuccess = true;
+        this.resetForm();
+      } catch (error) {
+        this.message = 'Error adding event. Please try again.';
+        this.isSuccess = false;
       }
     },
-    validateForm() {
-      return (
-        this.event.title &&
-        this.event.date &&
-        this.event.location &&
-        this.event.category &&
-        this.event.description
-      );
-    },
+    resetForm() {
+      this.form = {
+        title: '',
+        date: '',
+        location: '',
+        category: '',
+        description: '',
+        image: null
+      };
+      this.$refs.imageInput.value = null;
+    }
   },
   created() {
-    this.fetchCategories();
-  },
+    this.$store.dispatch('fetchCategories');
+  }
 };
 </script>
 
@@ -85,36 +115,59 @@ export default {
   margin: 0 auto;
   padding: 20px;
   background-color: #f9f9f9;
-  border-radius: 8px;
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
-label {
+.form-group label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
 
-input, select, textarea {
+.form-group input,
+.form-group textarea,
+.form-group select {
   width: 100%;
   padding: 10px;
   border-radius: 4px;
   border: 1px solid #ccc;
 }
 
-button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 4px;
+.form-group textarea {
+  resize: vertical;
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  padding: 10px;
   background-color: #0a6320;
   color: white;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-button:hover {
-  background-color: #054314; 
+.btn-primary:hover {
+  background-color: #0a6320b1;
+}
+
+.flash-message {
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  color: black;
+  text-align: center;
+}
+
+.flash-message.success {
+  background-color: #b7f7c6;
+}
+
+.flash-message.error {
+  background-color: #f0bcc1;
 }
 </style>

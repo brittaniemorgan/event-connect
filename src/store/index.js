@@ -6,9 +6,11 @@ export default createStore({
     return {
       events: [],
       categories: [],
+      searchQuery: null,
       selectedCategory: null,
       selectedLocation: null,
       selectedDate: null,
+      eventDetails: {}
     };
   },
   mutations: {
@@ -17,6 +19,9 @@ export default createStore({
     },
     setEvents(state, events) {
       state.events = events;
+    },
+    setSearchQuery(state, query) {
+      state.searchQuery = query;
     },
     setCategories(state, categories) {
       state.categories = categories;
@@ -29,6 +34,9 @@ export default createStore({
     },
     setSelectedDate(state, date) {
       state.selectedDate = date;
+    },
+    setEventDetails(state, { id, details }) {
+      state.eventDetails = { ...state.eventDetails, [id]: details };
     }
   },
   actions: {
@@ -47,18 +55,39 @@ export default createStore({
       } catch (error) {
         console.error('Failed to fetch categories:', error);
       }
+    },
+    async addEvent({ commit }, newEvent) {
+      try {
+        const event = await eventService.addEvent(newEvent);
+        commit('addEvent', event);
+      } catch (error) {
+        console.error('Failed to add event:', error);
+        throw error;
+      }
+    },
+    async fetchEventDetails({ commit }, eventId) {
+      try {
+        const event = await eventService.getEventDetails(eventId);
+        commit('setEventDetails', { id: eventId, details: event });
+      } catch (error) {
+        console.error('Failed to fetch event details:', error);
+      }
     }
   },
   getters: {
     events: state => {
       let filteredEvents = state.events;
 
+      if (state.searchQuery) {
+        filteredEvents = filteredEvents.filter(event => event.title.toLowerCase().includes(state.searchQuery.toLowerCase()));
+      }
+
       if (state.selectedCategory) {
         filteredEvents = filteredEvents.filter(event => event.category === state.selectedCategory);
       }
 
       if (state.selectedLocation) {
-        filteredEvents = filteredEvents.filter(event => event.location === state.selectedLocation);
+        filteredEvents = filteredEvents.filter(event => event.location.toLowerCase().includes(state.selectedLocation.toLowerCase()));
       }
 
       if (state.selectedDate) {
@@ -67,6 +96,7 @@ export default createStore({
 
       return filteredEvents;
     },
-    categories: state => state.categories
+    categories: state => state.categories,
+    eventDetails: (state) => state.eventDetails
   }
 });

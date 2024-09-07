@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import EventsView from "../views/EventsView.vue";
-import EventDetailsView from "../views/EventDetailsView.vue";
 import AboutView from "../views/AboutView.vue";
 import ContactView from "../views/ContactView.vue";
 import CreatEventView from "@/views/CreatEventView.vue";
+import EventDetailsView from "@/views/EventDetailsView.vue";
 
 const routes = [
   {

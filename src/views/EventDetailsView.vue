@@ -19,8 +19,8 @@
           <ReviewForm :eventId="event.id" @submit-review="handleReviewSubmit" />
         </div>
         <div v-else>
-          <div v-for="review in eventReviews(event.id)" :key="review.id">
-            <p><strong>User:</strong> {{ review.userId }}</p>
+          <div v-for="review in eventReviews(event.id)" :key="review.id" class="review">
+            <p><strong>User:</strong> {{ review.email }}</p>
             <p><strong>Rating:</strong> {{ review.rating }}</p>
             <p><strong>Review:</strong> {{ review.text }}</p>
             <p><strong>Date:</strong> {{ review.date }}</p>
@@ -144,5 +144,15 @@ export default {
   max-width: 100%;
   height: auto;
   border-radius: 4px;
+}
+
+.review {
+  font-size: 80%;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 </style>

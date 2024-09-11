@@ -1,6 +1,6 @@
 <template>
   <div class="review-form">
-    <h2>Leave a Review</h2>
+    <h3>Leave a Review</h3>
     <form @submit.prevent="submitReview">
       <textarea v-model="reviewText" placeholder="Write your review here..." required></textarea>
       <div class="rating">
@@ -57,7 +57,6 @@ export default {
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 textarea {

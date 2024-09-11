@@ -1,5 +1,5 @@
 export const mockEvents = [
-  { id: 1, title: "Rock Concert", date: "2024-09-15", location: "Downtown Arena", category: "Music", image: "1.jpeg" },
+  { id: 1, title: "Rock Concert", date: "2024-09-10", location: "Downtown Arena", category: "Music", image: "1.jpeg" },
   { id: 2, title: "Art Exhibition", date: "2024-10-01", location: "City Gallery", category: "Art", image: "2.jpeg" },
   { id: 3, title: "Food Festival", date: "2024-09-22", location: "Central Park", category: "Food & Drink", image: "3.jpeg"},
   { id: 4, title: "Tech Conference", date: "2024-11-05", location: "Convention Center", category: "Technology" },
@@ -26,4 +26,29 @@ export const mockUsers = [
   { id: 3, name: "Charlie Brown", email: "charlie.brown@example.com", password: "password123", role: "user" },
   { id: 4, name: "Diana Prince", email: "diana.prince@example.com", password: "password123", role: "admin" },
   { id: 5, name: "Evan Williams", email: "evan.williams@example.com", password: "password123", role: "admin" },
+];
+
+export const mockRegisteredEvents = [
+  { email: "alice.johnson@example.com", eventId: 1 },
+  { email: "alice.johnson@example.com", eventId: 3 },
+  { email: "bob.smith@example.com", eventId: 2 },
+  { email: "charlie.brown@example.com", eventId: 5 },
+  { email: "charlie.brown@example.com", eventId: 6 },
+];
+
+export const mockReviews = [
+  {
+    eventId: 1,
+    email: "alice.johnson@example.com",
+    rating: 5,
+    text: 'Amazing event! The speakers were fantastic and the organization was top-notch.',
+    date: '2024-09-10T14:30:00Z'
+  },
+  {
+    eventId: 1,
+    email: "johnB@example.com",
+    rating: 3,
+    text: 'The event was okay, but it didn’t meet my expectations. The sessions were a bit too long.',
+    date: '2024-09-12T18:00:00Z'
+  }
 ];

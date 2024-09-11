@@ -1,9 +1,9 @@
 import { createStore } from 'vuex';
 import eventService from '../services/eventService';
-import { auth } from './auth'
+import { auth } from './auth';
 
 export default createStore({
-  modules:{auth},
+  modules: { auth },
   state() {
     return {
       events: [],
@@ -12,7 +12,9 @@ export default createStore({
       selectedCategory: null,
       selectedLocation: null,
       selectedDate: null,
-      eventDetails: {}
+      eventDetails: {},
+      reviews: {},
+      registeredEvents: []
     };
   },
   mutations: {
@@ -39,7 +41,24 @@ export default createStore({
     },
     setEventDetails(state, { id, details }) {
       state.eventDetails = { ...state.eventDetails, [id]: details };
-    }
+    },
+    setRegisteredEvents(state, events) {
+      state.registeredEvents = events;
+    },
+    addReview(state, review) {
+      if (!state.reviews[review.eventId]) {
+        state.reviews[review.eventId] = [];
+      }
+      state.reviews[review.eventId].push(review);
+    },
+    registerEvent(state, eventId) {
+      if (!state.registeredEvents.includes(eventId)) {
+        state.registeredEvents.push(eventId);
+      }
+    },
+    setEventReviews(state, { eventId, reviews }) {
+      state.reviews = { ...state.reviews, [eventId]: reviews };
+    },
   },
   actions: {
     async fetchEvents({ commit }) {
@@ -50,6 +69,7 @@ export default createStore({
         console.error('Failed to fetch events:', error);
       }
     },
+
     async fetchCategories({ commit }) {
       try {
         const categories = await eventService.getCategories();
@@ -58,6 +78,7 @@ export default createStore({
         console.error('Failed to fetch categories:', error);
       }
     },
+
     async addEvent({ commit }, newEvent) {
       try {
         const event = await eventService.addEvent(newEvent);
@@ -67,6 +88,7 @@ export default createStore({
         throw error;
       }
     },
+
     async fetchEventDetails({ commit }, eventId) {
       try {
         const event = await eventService.getEventDetails(eventId);
@@ -74,14 +96,55 @@ export default createStore({
       } catch (error) {
         console.error('Failed to fetch event details:', error);
       }
-    }
+    },
+
+    async fetchRegisteredEvents({ commit }, email) {
+      try {
+        const events = await eventService.getRegisteredEvents(email);
+        commit('setRegisteredEvents', events);
+      } catch (error) {
+        console.error('Failed to fetch registered events:', error);
+      }
+    },
+
+    submitEventReview({ commit }, review) {
+      return new Promise((resolve, reject) => {
+        try {
+          commit('addReview', review);
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    },
+
+    async registerForEvent({ commit }, event) {
+      try {
+        await eventService.registerForEvent(event.eventId); 
+        commit('registerEvent', event.eventId);
+      } catch (error) {
+        console.error('Failed to register for event:', error);
+        throw error;
+      }
+    },
+
+    async fetchEventReviews({ commit }, eventId) {
+      try {
+        const reviews = await eventService.getEventReviews(eventId);
+        commit('setEventReviews', { eventId, reviews });
+      } catch (error) {
+        console.error('Failed to fetch event reviews:', error);
+      }
+    },
   },
   getters: {
     events: state => {
       let filteredEvents = state.events;
 
       if (state.searchQuery) {
-        filteredEvents = filteredEvents.filter(event => event.title.toLowerCase().includes(state.searchQuery.toLowerCase()));
+        filteredEvents = filteredEvents.filter(event =>
+          event.title.toLowerCase().includes(state.searchQuery.toLowerCase())
+        );
       }
 
       if (state.selectedCategory) {
@@ -89,7 +152,9 @@ export default createStore({
       }
 
       if (state.selectedLocation) {
-        filteredEvents = filteredEvents.filter(event => event.location.toLowerCase().includes(state.selectedLocation.toLowerCase()));
+        filteredEvents = filteredEvents.filter(event =>
+          event.location.toLowerCase().includes(state.selectedLocation.toLowerCase())
+        );
       }
 
       if (state.selectedDate) {
@@ -98,7 +163,19 @@ export default createStore({
 
       return filteredEvents;
     },
+
     categories: state => state.categories,
-    eventDetails: (state) => state.eventDetails
+
+    eventDetails: state => state.eventDetails,
+
+    isUserRegisteredForEvent: (state) => (eventId) => {
+      return state.registeredEvents.includes(eventId);
+    },
+
+    registeredEvents: state => state.registeredEvents,
+
+    eventReviews: (state) => (eventId) => {
+      return state.reviews[eventId] || [];
+    },
   }
 });

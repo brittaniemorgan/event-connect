@@ -115,7 +115,7 @@ export default {
     filteredEvents() {
       return this.events.filter(event =>{
         return event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
-          event.organizerId == this.currentUser.id}
+          event.organizerId == this.currentUser?.id}
       );
     },
     selectedEventName() {

@@ -3,10 +3,10 @@ import HomeView from "../views/HomeView.vue";
 import EventsView from "../views/EventsView.vue";
 import AboutView from "../views/AboutView.vue";
 import ContactView from "../views/ContactView.vue";
-import CreatEventView from "@/views/CreatEventView.vue";
 import EventDetailsView from "@/views/EventDetailsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import SignupView from "@/views/SignupView.vue";
+import OrganizerDashBoardView from "@/views/OrganizerDashBoardView.vue";
 
 const routes = [
   {
@@ -45,9 +45,9 @@ const routes = [
     component: ContactView,
   },
   {
-    path: '/create-event',
-    name: 'CreateEvent',
-    component: CreatEventView
+    path: '/organizer-dashboard',
+    name: 'OrganizerDashboard',
+    component: OrganizerDashBoardView
   },
 ];
 

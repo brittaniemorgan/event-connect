@@ -14,7 +14,8 @@ export default createStore({
       selectedDate: null,
       eventDetails: {},
       reviews: {},
-      registeredEvents: []
+      registeredEvents: [],
+      registeredUsers: [] 
     };
   },
   mutations: {
@@ -59,6 +60,10 @@ export default createStore({
     setEventReviews(state, { eventId, reviews }) {
       state.reviews = { ...state.reviews, [eventId]: reviews };
     },
+
+    setRegisteredUsers(state, users) {
+      state.registeredUsers = users;
+    }
   },
   actions: {
     async fetchEvents({ commit }) {
@@ -136,6 +141,23 @@ export default createStore({
         console.error('Failed to fetch event reviews:', error);
       }
     },
+
+    async fetchRegisteredUsers({ commit }, eventId) {
+      try {
+        const users = await eventService.getRegisteredUsers(eventId);
+        commit('setRegisteredUsers', users);
+      } catch (error) {
+        console.error('Failed to fetch registered users:', error);
+      }
+    },
+    async sendUserMessage({ eventId, userId, message }) {
+      try {
+        console.log('Message sent successfully', message, eventId, userId);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+        throw error;
+      }
+    }
   },
   getters: {
     events: state => {
@@ -177,5 +199,7 @@ export default createStore({
     eventReviews: (state) => (eventId) => {
       return state.reviews[eventId] || [];
     },
+
+    registeredUsers: state => state.registeredUsers
   }
 });

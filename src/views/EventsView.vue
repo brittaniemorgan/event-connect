@@ -2,7 +2,7 @@
   <div class="events">
     <header class="header">
       <h1>All Events</h1>
-      <router-link to="/create-event" class="btn-primary">Create Event</router-link>
+      <router-link to="/organizer-dashboard?create-event=true" class="btn-primary">Create Event</router-link>
     </header>
 
     <section class="hero">

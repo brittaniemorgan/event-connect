@@ -77,5 +77,14 @@ export default {
         resolve(review);
       }, 500);
     });
-  }
+  },
+
+  async getRegisteredUsers(eventId) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const users = mockRegisteredEvents.filter(reg => reg.eventId === eventId);
+        resolve(users);
+      }, 500);
+    });
+  },
 };

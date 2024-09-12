@@ -16,6 +16,9 @@
           <li class="nav-item">
             <router-link to="/contact" class="nav-link">Contact</router-link>
           </li>
+          <li class="nav-item">
+            <router-link v-if="true" to="/organizer-dashboard" class="nav-link">Organizer Dashboard</router-link>
+          </li>
           <li class="nav-item" v-if="isAuthenticated">
             <button @click="handleLogout" class="btn-secondary">Logout</button>
           </li>
@@ -140,7 +143,6 @@ export default {
   color: white;
   padding: 10px 20px;
   text-align: center;
-  margin-top: 20px;
 }
 
 .footer p {

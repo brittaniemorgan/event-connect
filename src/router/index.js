@@ -7,6 +7,7 @@ import EventDetailsView from "@/views/EventDetailsView.vue";
 import LoginView from "@/views/LoginView.vue";
 import SignupView from "@/views/SignupView.vue";
 import OrganizerDashBoardView from "@/views/OrganizerDashBoardView.vue";
+import store from "@/store";
 
 const routes = [
   {
@@ -47,13 +48,31 @@ const routes = [
   {
     path: '/organizer-dashboard',
     name: 'OrganizerDashboard',
-    component: OrganizerDashBoardView
+    component: OrganizerDashBoardView,
+    meta: { requiresAuth: true, requiredRole: 'organizer' }
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  let isAuthenticated =  store.getters.isAuthenticated; 
+  let user = store.getters.currentUser
+
+  if (to.meta.requiresAuth) {    
+    if (!isAuthenticated) {
+      next('/login'); 
+    } else if (to.matched.some(record => record.meta.requiredRole) && user.role !== to.meta.requiredRole) {
+      next('/'); 
+    } else {
+      next(); 
+    }
+  } else {
+    next();
+  }
 });
 
 export default router;

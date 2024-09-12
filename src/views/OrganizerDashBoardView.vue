@@ -7,18 +7,13 @@
         <button class="close-sidebar" @click="toggleSidebar">×</button>
       </div>
       <nav class="sidebar-nav">
-        <button
-          v-for="item in navItems"
-          :key="item.id"
-          @click="activeView = item.id"
-          :class="{ active: activeView === item.id }"
-          class="nav-button"
-        >
+        <button v-for="item in navItems" :key="item.id" @click="activeView = item.id"
+          :class="{ active: activeView === item.id }" class="nav-button">
           {{ item.name }}
         </button>
       </nav>
     </aside>
-    
+
     <main class="main-content">
       <button class="open-sidebar" @click="toggleSidebar">☰</button>
 
@@ -28,7 +23,7 @@
         <div class="overview-stats">
           <div class="stat-card">
             <h3>Total Events</h3>
-            <p>{{ events.length }}</p>
+            <p>{{ filteredEvents.length }}</p>
           </div>
           <div class="stat-card">
             <h3>Upcoming Events</h3>
@@ -46,12 +41,8 @@
         <div class="event-controls">
           <input v-model="searchQuery" placeholder="Search events..." class="search-input" />
         </div>
-        <EventManagement 
-          :events="filteredEvents" 
-          @edit-event="editEvent" 
-          @delete-event="deleteEvent"
-          @select-event="updateSelectedEvent" 
-        />
+        <EventManagement :events="filteredEvents" @edit-event="editEvent" @delete-event="deleteEvent"
+          @select-event="updateSelectedEvent" />
       </div>
 
       <!-- Registered Users View -->
@@ -68,10 +59,7 @@
         <div v-if="selectedEvent">
           <h3>Users for {{ selectedEventName }}</h3>
           <RegisteredUserList :eventId="selectedEvent" />
-          <ContactUserForm 
-            :users="registeredUsers" 
-            @send-message="handleSendMessage"
-          />
+          <ContactUserForm :users="registeredUsers" @send-message="handleSendMessage" />
         </div>
         <div v-else>
           <p>Please select an event to view registered users and contact them.</p>
@@ -116,17 +104,18 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['events', 'registeredUsers']),
+    ...mapGetters(['events', 'registeredUsers', 'currentUser']),
     upcomingEvents() {
       const now = new Date();
-      return this.events.filter(event => new Date(event.date) > now);
+      return this.filteredEvents.filter(event => new Date(event.date) > now);
     },
     totalRegisteredUsers() {
-      return this.events.reduce((total, event) => total + (event.registeredUsers?.length || 0), 0);
+      return this.filteredEvents.reduce((total, event) => total + (event.registeredUsers?.length || 0), 0);
     },
     filteredEvents() {
-      return this.events.filter(event => 
-        event.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+      return this.events.filter(event =>{
+        return event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
+          event.organizerId == this.currentUser.id}
       );
     },
     selectedEventName() {
@@ -167,7 +156,7 @@ export default {
   created() {
     this.fetchEvents();
     if (this.$route.query['create-event'] === 'true') {
-      this.showCreateEventModal = true;      
+      this.showCreateEventModal = true;
       this.activeView = 'events';
     }
   }
@@ -224,7 +213,8 @@ export default {
   width: 100%;
 }
 
-.nav-button:hover, .nav-button.active {
+.nav-button:hover,
+.nav-button.active {
   background-color: #34495e;
 }
 
@@ -272,13 +262,15 @@ h2 {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.event-controls, .user-controls {
+.event-controls,
+.user-controls {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.event-select, .search-input {
+.event-select,
+.search-input {
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -315,7 +307,8 @@ h2 {
     transform: translateX(0);
   }
 
-  .close-sidebar, .open-sidebar {
+  .close-sidebar,
+  .open-sidebar {
     display: block;
   }
 
@@ -323,11 +316,13 @@ h2 {
     padding: 20px;
   }
 
-  .event-controls, .user-controls {
+  .event-controls,
+  .user-controls {
     flex-direction: column;
   }
 
-  .event-select, .search-input {
+  .event-select,
+  .search-input {
     width: 100%;
   }
 }

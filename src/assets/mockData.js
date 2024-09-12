@@ -1,13 +1,14 @@
 export const mockEvents = [
-  { id: 1, title: "Rock Concert", date: "2024-09-10", location: "Downtown Arena", category: "Music", image: "1.jpeg" },
-  { id: 2, title: "Art Exhibition", date: "2024-10-01", location: "City Gallery", category: "Art", image: "2.jpeg" },
-  { id: 3, title: "Food Festival", date: "2024-09-22", location: "Central Park", category: "Food & Drink", image: "3.jpeg"},
-  { id: 4, title: "Tech Conference", date: "2024-11-05", location: "Convention Center", category: "Technology" },
-  { id: 5, title: "Comedy Night", date: "2024-09-30", location: "Laugh Lounge", category: "Theater" },
-  { id: 6, title: "Film Screening", date: "2024-10-10", location: "Movie House", category: "Art" },
-  { id: 7, title: "Yoga Workshop", date: "2024-09-28", location: "Wellness Studio", category: "Workshops" },
-  { id: 8, title: "Charity Run", date: "2024-10-15", location: "City Stadium", category: "Charity" },
+  { id: 1, title: "Rock Concert", date: "2024-09-10", location: "Downtown Arena", category: "Music", image: "1.jpeg", organizerId: 6 },
+  { id: 2, title: "Art Exhibition", date: "2024-10-01", location: "City Gallery", category: "Art", image: "2.jpeg", organizerId: 7 },
+  { id: 3, title: "Food Festival", date: "2024-09-22", location: "Central Park", category: "Food & Drink", image: "3.jpeg", organizerId: 6 },
+  { id: 4, title: "Tech Conference", date: "2024-11-05", location: "Convention Center", category: "Technology", organizerId: 7 },
+  { id: 5, title: "Comedy Night", date: "2024-09-30", location: "Laugh Lounge", category: "Theater", organizerId: 6 },
+  { id: 6, title: "Film Screening", date: "2024-10-10", location: "Movie House", category: "Art", organizerId: 7 },
+  { id: 7, title: "Yoga Workshop", date: "2024-09-28", location: "Wellness Studio", category: "Workshops", organizerId: 6 },
+  { id: 8, title: "Charity Run", date: "2024-10-15", location: "City Stadium", category: "Charity", organizerId: 7 },
 ];
+
 
 export const mockCategories = [
   { id: 1, name: "Music" },
@@ -26,6 +27,8 @@ export const mockUsers = [
   { id: 3, name: "Charlie Brown", email: "charlie.brown@example.com", password: "password123", role: "user" },
   { id: 4, name: "Diana Prince", email: "diana.prince@example.com", password: "password123", role: "admin" },
   { id: 5, name: "Evan Williams", email: "evan.williams@example.com", password: "password123", role: "admin" },
+  { id: 6, name: "Sophia Lee", email: "sophia.lee@example.com", password: "password123", role: "organizer" },
+  { id: 7, name: "James Wilson", email: "james.wilson@example.com", password: "password123", role: "organizer" }
 ];
 
 export const mockRegisteredEvents = [

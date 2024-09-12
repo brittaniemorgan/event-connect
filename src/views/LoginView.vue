@@ -12,7 +12,6 @@
       </div>
       <button type="submit" :disabled="isLoading">{{ isLoading ? 'Logging in...' : 'Login' }}</button>
     </form>
-    <p v-if="error" class="error">{{ error }}</p>
     <p>Don't have an account? <router-link to="/signup">Sign up</router-link></p>
   </div>
 </template>
@@ -31,15 +30,17 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['loginUser']),
+    ...mapActions(['loginUser', 'setFlashMessage']),
     async login() {
       this.isLoading = true;
       this.error = null;
       try {
         await this.loginUser({ email: this.email, password: this.password });
         this.$router.push('/');
+        this.setFlashMessage({ message: 'Login successful.', type: 'info' });
       } catch (error) {
         this.error = error.message || 'Failed to login. Please try again.';
+        this.setFlashMessage({ message: error, type: 'danger' });
       } finally {
         this.isLoading = false;
       }
@@ -88,10 +89,5 @@ button {
 button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
-}
-
-.error {
-  color: red;
-  margin-top: 10px;
 }
 </style>

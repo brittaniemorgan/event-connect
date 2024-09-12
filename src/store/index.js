@@ -1,9 +1,10 @@
 import { createStore } from 'vuex';
 import eventService from '../services/eventService';
 import { auth } from './auth';
+import { flash } from './flash';
 
 export default createStore({
-  modules: { auth },
+  modules: { auth, flash },
   state() {
     return {
       events: [],

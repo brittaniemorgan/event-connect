@@ -27,10 +27,11 @@
           </li>
         </ul>
       </div>
-    </nav>
+    </nav>    
     <template v-if="currentUser">
       <p class="greeting">Welcome, {{ currentUser.name }}!</p>
     </template>
+    <FlashMessage />
     <router-view class="content"></router-view>
     <footer class="footer">
       <div class="container">
@@ -42,9 +43,11 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import FlashMessage from './components/FlashMessage.vue';
 
 export default {
   name: "App",
+  components:{FlashMessage},
   computed: {
     ...mapGetters(['isAuthenticated', 'currentUser']),
   },

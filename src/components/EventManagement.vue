@@ -9,31 +9,37 @@
         <h3>{{ event.title }}</h3>
         <p><strong>Date:</strong> {{ formatDate(event.date) }}</p>
         <p><strong>Location:</strong> {{ event.location }}</p>
-        <button @click="editEvent(event)" class="btn-secondary">Edit</button>
+        <p><strong>Status:</strong> {{ event.status }}</p>
+        <button @click="openEditModal(event)" class="btn-primary">Edit</button>
         <button @click="selectEvent(event.id)" class="btn-secondary">View Participants</button>
-        <button @click="confirmDeleteEvent(event.id)" class="btn-danger">Delete</button>
+        <button @click="openCancelModal(event)" class="btn-warning">Cancel</button>
+        <!-- <button @click="confirmDeleteEvent(event.id)" class="btn-danger">Delete</button> -->
       </div>
     </div>
     <div v-else>
       <p>No events found. Create a new event to get started!</p>
     </div>
-    
-    <CreateEventModal 
-      v-if="showAddEventModal" 
-      @close="showAddEventModal = false"
-      @event-created="onEventCreated"
-    />
+    <CreateEventModal v-if="showAddEventModal" @close="showAddEventModal = false" @event-created="onEventCreated" />
+
+    <EditEventModal v-if="showEditEventModal" :event="selectedEvent" @close="closeEditModal"
+      @edit-event="handleEditEvent" />
+
+    <CancelEventModal v-if="showCancelModal" :event="selectedEvent" @close="closeCancelModal"
+      @cancel-event="handleCancelEvent" />
   </div>
 </template>
 
 <script>
-import { format } from 'date-fns';
+import CancelEventModal from './CancelEventModal.vue';
 import CreateEventModal from './CreateEventModal.vue';
+import EditEventModal from './EditEventModal.vue';
 
 export default {
   name: 'EventManagement',
   components: {
-    CreateEventModal
+    CreateEventModal,
+    EditEventModal,
+    CancelEventModal
   },
   props: {
     events: {
@@ -43,15 +49,31 @@ export default {
   },
   data() {
     return {
-      showAddEventModal: false
+      showAddEventModal: false,
+      showEditEventModal: false,
+      showCancelModal: false,
     };
   },
   methods: {
     formatDate(date) {
-      return format(new Date(date), 'MMMM dd, yyyy');
+      return new Date(date + "T00:00:00").toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
     },
-    editEvent(event) {
-      this.$emit('edit-event', event);
+    openEditModal(event) {
+      console.log(event)
+      this.selectedEvent = event;
+      this.showEditEventModal = true;
+    },
+    closeEditModal() {
+      this.showEditEventModal = false;
+      this.selectedEvent = null;
+    },
+    handleEditEvent(updatedEvent) {
+      this.$emit('edit-event', updatedEvent);
+      this.showEditEventModal = false;
     },
     confirmDeleteEvent(eventId) {
       if (confirm('Are you sure you want to delete this event?')) {
@@ -63,11 +85,23 @@ export default {
     },
     onEventCreated() {
       this.showAddEventModal = false;
-      this.$emit('refresh-events');
+    },
+    openCancelModal(event) {
+      this.selectedEvent = event;
+      this.showCancelModal = true;
+    },
+    closeCancelModal() {
+      this.showCancelModal = false;
+      this.selectedEvent = null;
+    },
+    handleCancelEvent(event) {
+      this.$emit('cancel-event', event);
+      this.showCancelModal = false;
     }
   }
 };
 </script>
+
 
 <style scoped>
 .event-management {
@@ -94,7 +128,9 @@ export default {
 
 .btn-primary,
 .btn-secondary,
-.btn-danger {
+.btn-warning,
+.btn-danger,
+.btn-info {
   padding: 10px 20px;
   border-radius: 4px;
   border: none;
@@ -119,6 +155,15 @@ export default {
   background-color: #2980b9;
 }
 
+.btn-warning {
+  background-color: #f39c12;
+  color: white;
+}
+
+.btn-warning:hover {
+  background-color: #d35400;
+}
+
 .btn-danger {
   background-color: #e74c3c;
   color: white;
@@ -126,5 +171,40 @@ export default {
 
 .btn-danger:hover {
   background-color: #c0392b;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  color: white;
+}
+
+.btn-info:hover {
+  background-color: #138496;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
 }
 </style>

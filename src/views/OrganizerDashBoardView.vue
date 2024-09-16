@@ -41,8 +41,8 @@
         <div class="event-controls">
           <input v-model="searchQuery" placeholder="Search events..." class="search-input" />
         </div>
-        <EventManagement :events="filteredEvents" @edit-event="editEvent" @delete-event="deleteEvent"
-          @select-event="updateSelectedEvent" />
+        <EventManagement :events="filteredEvents" @edit-event="onEditEvent" @delete-event="onDeleteEvent"
+          @select-event="selectEvent" @cancel-event="onEditEvent"/>
       </div>
 
       <!-- Registered Users View -->
@@ -51,7 +51,7 @@
         <div class="user-controls">
           <select v-model="selectedEvent" @change="loadRegisteredUsers" class="event-select">
             <option value="">Select an event</option>
-            <option v-for="event in events" :key="event.id" :value="event.id">
+            <option v-for="event in filteredEvents" :key="event.id" :value="event.id">
               {{ event.title }}
             </option>
           </select>
@@ -65,6 +65,7 @@
           <p>Please select an event to view registered users and contact them.</p>
         </div>
       </div>
+
 
       <!-- Reports View -->
       <div v-if="activeView === 'reports'" class="dashboard-view">
@@ -107,15 +108,17 @@ export default {
     ...mapGetters(['events', 'registeredUsers', 'currentUser']),
     upcomingEvents() {
       const now = new Date();
-      return this.filteredEvents.filter(event => new Date(event.date) > now);
+      return this.filteredEvents.filter(event => event.status === 'Upcoming' && new Date(event.date) >= now);
     },
     totalRegisteredUsers() {
-      return this.filteredEvents.reduce((total, event) => total + (event.registeredUsers?.length || 0), 0);
+      // TODO: Implement logic to calculate total registered users
+      return 0;
     },
     filteredEvents() {
-      return this.events.filter(event =>{
+      return this.events.filter(event => {
         return event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
-          event.organizerId == this.currentUser?.id}
+          event.organizerId == this.currentUser?.id
+      }
       );
     },
     selectedEventName() {
@@ -124,14 +127,21 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchEvents', 'fetchRegisteredUsers', 'sendUserMessage']),
-    editEvent(event) {
-      console.log('Editing event:', event);
+    ...mapActions(['fetchEvents', 'fetchRegisteredUsers', 'sendUserMessage', 'cancelEvent', 'editEvent']),
+    onEditEvent(event) {
+      this.editEvent(event)
+        .then(() => {
+          console.log(event)
+          this.fetchEvents();
+        })
+        .catch(error => {
+          console.error('Error editing event:', error);
+        });
     },
-    deleteEvent(eventId) {
+    onDeleteEvent(eventId) {
       console.log('Deleting event:', eventId);
     },
-    updateSelectedEvent(eventId) {
+    selectEvent(eventId) {
       this.selectedEvent = eventId;
       this.loadRegisteredUsers();
       this.activeView = 'users';

@@ -16,7 +16,9 @@ export default createStore({
       eventDetails: {},
       reviews: {},
       registeredEvents: [],
-      registeredUsers: [] 
+      registeredUsers: [],
+      purchasedTickets: {},
+      userTickets: {}
     };
   },
   mutations: {
@@ -61,9 +63,27 @@ export default createStore({
     setEventReviews(state, { eventId, reviews }) {
       state.reviews = { ...state.reviews, [eventId]: reviews };
     },
-
     setRegisteredUsers(state, users) {
       state.registeredUsers = users;
+    },
+    setPurchasedTickets(state, { eventId, tickets }) {
+      state.purchasedTickets = { ...state.purchasedTickets, [eventId]: tickets };
+    },
+    addPurchasedTicket(state, { userId, eventId, ticket }) {
+      if (!state.userTickets[userId]) {
+        state.userTickets[userId] = {};
+      }
+      if (!state.userTickets[userId][eventId]) {
+        state.userTickets[userId][eventId] = [];
+      }
+      state.userTickets[userId][eventId].push(ticket);
+    },
+
+    editEvent(state, { updatedEvent }) {
+      const eventIndex = state.events.findIndex(event => event.id === updatedEvent.id);
+      if (eventIndex !== -1) {
+        state.events[eventIndex] = { ...state.events[eventIndex], ...updatedEvent };
+      }
     }
   },
   actions: {
@@ -114,19 +134,19 @@ export default createStore({
     },
 
     submitEventReview({ commit }, review) {
-      return new Promise((resolve, reject) => {
-        try {
-          commit('addReview', review);
-          resolve();
-        } catch (error) {
-          reject(error);
-        }
-      });
+      try {
+        commit('addReview', review);
+        eventService.addEventReview(review);
+      } catch (error) {
+        console.error('Failed to submit event review:', error);
+        throw error
+      }
+
     },
 
     async registerForEvent({ commit }, event) {
       try {
-        await eventService.registerForEvent(event.eventId); 
+        await eventService.registerForEvent(event.eventId);
         commit('registerEvent', event.eventId);
       } catch (error) {
         console.error('Failed to register for event:', error);
@@ -142,6 +162,16 @@ export default createStore({
         console.error('Failed to fetch event reviews:', error);
       }
     },
+    async fetchPurchasedTickets({ commit }, email) {
+      try {
+        const tickets = await eventService.getPurchasedTickets(email);
+        tickets.forEach(ticket => {
+          commit('addPurchasedTicket', ticket);
+        });
+      } catch (error) {
+        console.error('Failed to fetch purchased tickets:', error);
+      }
+    },
 
     async fetchRegisteredUsers({ commit }, eventId) {
       try {
@@ -151,11 +181,33 @@ export default createStore({
         console.error('Failed to fetch registered users:', error);
       }
     },
+
+    async purchaseTicket({ commit }, data) {
+      try {
+        const response = await eventService.purchaseTicket(data);
+        commit('addPurchasedTicket', { email: data.email, eventId: data.eventId, ticketId: data.ticketId, ticketType: data.ticketType });
+        return response;
+      } catch (error) {
+        console.error('Failed to purchase ticket:', error);
+        throw error;
+      }
+    },
+
     async sendUserMessage({ eventId, userId, message }) {
       try {
         console.log('Message sent successfully', message, eventId, userId);
       } catch (error) {
         console.error('Failed to send message:', error);
+        throw error;
+      }
+    },
+
+    async editEvent({ commit }, updatedEvent) {
+      try {
+        await eventService.updateEvent(updatedEvent);
+        commit('editEvent', { updatedEvent });
+      } catch (error) {
+        console.error('Failed to edit event:', error);
         throw error;
       }
     }
@@ -201,6 +253,16 @@ export default createStore({
       return state.reviews[eventId] || [];
     },
 
-    registeredUsers: state => state.registeredUsers
+    registeredUsers: state => state.registeredUsers,
+
+    getUserTickets: (state) => (userId) => {
+      return state.userTickets[userId] || {};
+    },
+    getTicketCount: (state) => (userId, eventId) => {
+      return state.userTickets[userId]?.[eventId] || 0;
+    },
+    hasUserPurchasedTicket: (state) => (userId, eventId) => {
+      return state.userTickets[userId]?.[eventId] > 0;
+    },
   }
 });

@@ -1,4 +1,4 @@
-import { mockEvents, mockCategories, mockRegisteredEvents, mockReviews } from '../assets/mockData';
+import { mockEvents, mockCategories, mockRegisteredEvents, mockReviews, mockPurchasedTickets } from '../assets/mockData';
 
 export default {
   async getEvents() {
@@ -61,6 +61,29 @@ export default {
     });
   },
 
+  async purchaseTicket(ticketData) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const newTicket = {
+          id: mockPurchasedTickets.length + 1,
+          ...ticketData,
+          purchaseDate: new Date().toISOString()
+        };
+        mockPurchasedTickets.push(newTicket);
+        resolve(newTicket);
+      }, 500);
+    });
+  },
+
+  async getPurchasedTickets(userEmail) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const tickets = mockPurchasedTickets.filter(ticket => ticket.email === userEmail);
+        resolve(tickets);
+      }, 500);
+    });
+  },
+
   async getEventReviews(eventId) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -82,8 +105,31 @@ export default {
   async getRegisteredUsers(eventId) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const users = mockRegisteredEvents.filter(reg => reg.eventId === eventId);
+        const users = mockPurchasedTickets.filter(reg => reg.eventId === eventId);
         resolve(users);
+      }, 500);
+    });
+  },
+
+  async getTicketHolders(eventId) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const tickets = mockPurchasedTickets.filter(ticket => ticket.eventId === eventId);
+        resolve(tickets);
+      }, 500);
+    });
+  },
+  async updateEvent(newData) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log(newData); 
+        const eventIndex = mockEvents.findIndex(event => event.id === newData.id);
+        if (eventIndex !== -1) {
+          mockEvents[eventIndex] = { ...mockEvents[eventIndex], ...newData };
+          resolve(mockEvents[eventIndex]);
+        } else {
+          reject(new Error('Event not found'));
+        }
       }, 500);
     });
   },

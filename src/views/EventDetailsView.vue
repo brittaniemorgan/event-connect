@@ -2,13 +2,15 @@
   <div class="event-details">
     <button class="btn-primary" @click="goBack">Back to Events</button>
     <div v-if="event" class="event-content">
-      <h1>{{ event.title }}</h1>
+      <h1 class="event-title">{{ event.title }}</h1>
       <p><strong>Date:</strong> {{ formatDate(event.date) }}</p>
       <p><strong>Location:</strong> {{ event.location }}</p>
       <p><strong>Category:</strong> {{ event.category }}</p>
       <p><strong>Status:</strong> <span :class="statusClass">{{ event.status }}</span></p>
+      <p><strong>Organizer:</strong> {{ event.organizerId }}</p>
       <p><strong>Description:</strong></p>
-      <p>{{ event.description }}</p>
+      <p>{{ event.description }}</p>      
+
       <div v-if="getImagePath(event.image)" class="event-image">
         <img :src="getImagePath(event.image)" :alt="event.title + ' Image'" />
       </div>
@@ -126,47 +128,57 @@ export default {
 <style scoped>
 .event-details {
   padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
 .btn-primary {
-  padding: 10px 20px;
+  padding: 12px 24px;
   background-color: #0a6320;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   margin-bottom: 20px;
+  font-size: 16px;
 }
 
-.btn-disabled {
-  padding: 10px 20px;
-  background-color: #a1a1a1;
-  color: rgb(52, 52, 52);
-  border: none;
-  border-radius: 4px;
-  cursor: not-allowed;
-  margin-bottom: 20px;
+.event-title {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: #0a6320;
 }
 
 .event-content {
   max-width: 800px;
   margin: 0 auto;
+  line-height: 1.6;
+}
+
+.event-image {
+  width: 100%;
+  max-width: 600px;
+  height: 300px; 
+  overflow: hidden; 
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .event-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 4px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .review {
-  font-size: 80%;
+  font-size: 90%;
   border: 1px solid #ddd;
-  padding: 15px;
-  border-radius: 4px;
-  margin-bottom: 10px;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 15px;
   background: #fff;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .status-upcoming {
@@ -188,5 +200,6 @@ export default {
 .cancelled-message {
   font-style: italic;
   color: #6c757d;
+  margin-top: 20px;
 }
 </style>

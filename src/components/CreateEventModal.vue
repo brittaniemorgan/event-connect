@@ -7,17 +7,17 @@
           <label for="title">Event Title:</label>
           <input type="text" v-model="form.title" id="title" required />
         </div>
-        
+
         <div class="form-group">
           <label for="date">Event Date:</label>
           <input type="date" v-model="form.date" id="date" required />
         </div>
-        
+
         <div class="form-group">
           <label for="location">Location:</label>
           <input type="text" v-model="form.location" id="location" required />
         </div>
-        
+
         <div class="form-group">
           <label for="category">Category:</label>
           <select v-model="form.category" id="category" required>
@@ -26,17 +26,27 @@
             </option>
           </select>
         </div>
-        
+
         <div class="form-group">
           <label for="description">Event Description:</label>
           <textarea v-model="form.description" id="description" required></textarea>
         </div>
         
         <div class="form-group">
+          <label for="cost">Ticket Cost:</label>
+          <input type="number" v-model="form.cost" id="cost" required />
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Quantity Available:</label>
+          <input type="number" v-model="form.quantity" id="quantity" required />
+        </div>
+
+        <div class="form-group">
           <label for="image">Event Image:</label>
           <input type="file" @change="onFileChange" id="image" ref="imageInput" />
         </div>
-        
+
         <div class="button-group">
           <button type="submit" class="btn-primary">Create Event</button>
           <button type="button" @click="$emit('close')" class="btn-secondary">Cancel</button>
@@ -70,8 +80,21 @@ export default {
     ...mapActions(['addEvent']),
     onFileChange(event) {
       const file = event.target.files[0];
-      this.form.image = file;
-    },
+      const fileType = file.type;
+      const maxSize = 2 * 1024 * 1024;
+
+      if (!fileType.startsWith('image/')) {
+        alert('Only image files are allowed.');
+        this.$refs.imageInput.value = ''; 
+      } else if (file.size > maxSize) {
+        alert('File size exceeds 2MB.');
+        this.$refs.imageInput.value = '';
+      } else {
+        this.form.image = file;
+      }
+    }
+    ,
+    
     async submitForm() {
       try {
         await this.addEvent(this.form);
@@ -103,6 +126,8 @@ export default {
   border-radius: 8px;
   max-width: 500px;
   width: 100%;
+  max-height: 80vh; 
+  overflow-y: auto;
 }
 
 .form-group {
@@ -111,13 +136,15 @@ export default {
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 5px;  
+  font-size: 0.8rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
+  height: 5%;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;

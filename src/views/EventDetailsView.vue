@@ -6,6 +6,7 @@
       <p><strong>Date:</strong> {{ formatDate(event.date) }}</p>
       <p><strong>Location:</strong> {{ event.location }}</p>
       <p><strong>Category:</strong> {{ event.category }}</p>
+      <p><strong>Status:</strong> <span :class="statusClass">{{ event.status }}</span></p>
       <p><strong>Description:</strong></p>
       <p>{{ event.description }}</p>
       <div v-if="getImagePath(event.image)" class="event-image">
@@ -28,20 +29,27 @@
           <ReviewForm :eventId="event.id" @submit-review="handleReviewSubmit" />
         </div>
       </div>
-      <div v-else>
-        <button v-if="!currentUser || (currentUser && !isUserRegisteredForEvent(event.id))" class="btn-primary"
-          @click="showRegistrationModal = true">Register for
-          Event</button>
-        <button v-else class="btn-disabled">You are Registered</button>
-      <p>Come back a leave a review after the event!</p>
+
+      <div v-else-if="event.status === 'Upcoming'">
+        <button class="btn-primary" @click="showPurchaseModal = true">
+          Purchase Ticket
+        </button>
+        <p>Come back and leave a review after the event!</p>
+      </div>
+      <div v-else-if="event.status === 'Sold Out'">
+        <p class="sold-out-message">This event is sold out. Check back later for any updates.</p>
+      </div>
+      <div v-else-if="event.status === 'Cancelled'">
+        <p class="cancelled-message">We're sorry, this event has been cancelled. If you purchased a ticket, you will be
+          contacted for a refund.</p>
+      </div>
     </div>
-  </div>
 
-  <div v-else>
-    <p>Loading event details...</p>
-  </div>
+    <div v-else>
+      <p>Loading event details...</p>
+    </div>
 
-  <RegistrationModal v-if="showRegistrationModal" @close="showRegistrationModal = false" :eventId="event.id" />
+    <TicketPurchaseModal v-if="showPurchaseModal" @close="showPurchaseModal = false" :event="event" />
   </div>
 </template>
 
@@ -49,21 +57,21 @@
 import { mapActions, mapGetters } from 'vuex';
 import { format, isBefore } from 'date-fns';
 import ReviewForm from "@/components/ReviewForm.vue";
-import RegistrationModal from "@/components/RegistrationModal.vue";
+import TicketPurchaseModal from "@/components/TicketPurchaseModal.vue";
 
 export default {
   name: "EventDetailsView",
   components: {
     ReviewForm,
-    RegistrationModal
+    TicketPurchaseModal
   },
   data() {
     return {
-      showRegistrationModal: false
+      showPurchaseModal: false
     };
   },
   computed: {
-    ...mapGetters(['eventDetails', 'isAuthenticated', 'currentUser', 'isUserRegisteredForEvent', 'eventReviews']),
+    ...mapGetters(['eventDetails', 'isAuthenticated', 'currentUser', 'hasUserPurchasedTicket', 'eventReviews']),
     event() {
       return this.eventDetails[this.$route.params.id] || null;
     },
@@ -72,10 +80,19 @@ export default {
         return isBefore(new Date(this.event.date), new Date());
       }
       return false;
+    },
+    statusClass() {
+      if (!this.event) return '';
+      switch (this.event.status) {
+        case 'Upcoming': return 'status-upcoming';
+        case 'Sold Out': return 'status-sold-out';
+        case 'Cancelled': return 'status-cancelled';
+        default: return '';
+      }
     }
   },
   methods: {
-    ...mapActions(['fetchEventDetails', 'submitEventReview', 'fetchRegisteredEvents', 'fetchEventReviews']),
+    ...mapActions(['fetchEventDetails', 'submitEventReview', 'fetchPurchasedTickets', 'fetchEventReviews']),
     formatDate(date) {
       return format(new Date(date), 'MMMM dd, yyyy');
     },
@@ -91,11 +108,7 @@ export default {
       }
     },
     handleReviewSubmit(review) {
-      this.submitEventReview(review).then(() => {
-        this.fetchEventReviews(this.event.id);
-      }).catch(error => {
-        console.error("Error submitting review:", error);
-      });
+      this.submitEventReview(review)
     }
   },
   created() {
@@ -104,7 +117,7 @@ export default {
     this.fetchEventReviews(eventId);
 
     if (this.currentUser) {
-      this.fetchRegisteredEvents(this.currentUser.email);
+      this.fetchPurchasedTickets(this.currentUser.email);
     }
   }
 };
@@ -154,5 +167,26 @@ export default {
   margin-bottom: 10px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-upcoming {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-sold-out {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.status-cancelled {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.sold-out-message,
+.cancelled-message {
+  font-style: italic;
+  color: #6c757d;
 }
 </style>

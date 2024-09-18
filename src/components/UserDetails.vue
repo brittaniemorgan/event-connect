@@ -4,7 +4,7 @@
       <h2>User Details</h2>
       <p><strong>Name:</strong> {{ user.name }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
-      <p><strong>Registration Date:</strong> {{ user.registrationDate }}</p>
+      <p><strong>Registration Date:</strong> {{ formatDate(user.purchaseDate) }}</p>
       <!-- Add any other user details you need here -->
     </div>
   </template>
@@ -17,6 +17,15 @@
         type: Object,
         required: true
       }
+    },
+    methods:{
+      formatDate(date) {
+      return new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    },
     }
   };
   </script>

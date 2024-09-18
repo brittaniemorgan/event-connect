@@ -105,7 +105,7 @@ export default {
   async getRegisteredUsers(eventId) {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const users = mockPurchasedTickets.filter(reg => reg.eventId === eventId);
+        const users = mockPurchasedTickets.map(ticket => ({ ...ticket, ...mockTickets.filter(t => t.ticketId === ticket.ticketId)[0] })).filter(ticket => ticket.eventId === eventId);
         resolve(users);
       }, 500);
     });
@@ -122,7 +122,7 @@ export default {
   async updateEvent(newData) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        console.log(newData); 
+        console.log(newData);
         const eventIndex = mockEvents.findIndex(event => event.id === newData.id);
         if (eventIndex !== -1) {
           mockEvents[eventIndex] = { ...mockEvents[eventIndex], ...newData };
@@ -143,7 +143,7 @@ export default {
       }, 500);
     });
   },
-  
+
   async getTickets(eventId) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -156,8 +156,8 @@ export default {
   async updateTicket(newData) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        console.log(newData); 
-        const ticketIndex = mockTickets.findIndex(ticket =>  ticket.ticketId === newData.ticketId);
+        console.log(newData);
+        const ticketIndex = mockTickets.findIndex(ticket => ticket.ticketId === newData.ticketId);
         if (ticketIndex !== -1) {
           mockTickets[ticketIndex] = { ...mockTickets[ticketIndex], ...newData };
           resolve(mockTickets[ticketIndex]);

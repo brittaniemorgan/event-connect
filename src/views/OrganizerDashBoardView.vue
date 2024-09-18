@@ -57,7 +57,7 @@
           </select>
         </div>
         <div v-if="selectedEvent">
-          <h3>Users for {{ selectEvent.name }}</h3>
+          <h3>Users for {{ selectedEvent.title }}</h3>
           <RegisteredUserList :event="selectedEvent" />
           <ContactUserForm :users="registeredUsers" @send-message="handleSendMessage" />
         </div>

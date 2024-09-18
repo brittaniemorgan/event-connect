@@ -72,7 +72,7 @@
       };
     },
     computed: {
-      ...mapGetters(['events'])
+      ...mapGetters(['events', 'currentUser'])
     },
     methods: {
       ...mapActions(['purchaseTicket', 'fetchEvents', 'loginUser', 'setFlashMessage']),
@@ -89,6 +89,8 @@
       }
     },
     created() {
+      this.form.name = this.currentUser?.name || "";
+      this.form.email = this.currentUser?.email || "";
       this.fetchEvents();
     }
   };

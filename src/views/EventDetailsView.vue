@@ -73,7 +73,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['eventDetails', 'isAuthenticated', 'currentUser', 'hasUserPurchasedTicket', 'eventReviews']),
+    ...mapGetters(['eventDetails', 'currentUser', 'hasUserPurchasedTicket', 'eventReviews']),
     event() {
       return this.eventDetails[this.$route.params.id] || null;
     },

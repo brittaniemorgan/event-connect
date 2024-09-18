@@ -25,10 +25,8 @@ export const auth = {
         const user = mockUsers.find(user => user.email === email && user.password === password);
         if (!user) throw new Error('Invalid email or password');
 
-        const token = 'mock-token';
-
         commit('setUser', user);
-        commit('setToken', token);
+        commit('setToken', {role: user.role, name: user.name, email: user.email});
       } catch (error) {
         console.error('Login failed:', error);
         throw error;
@@ -61,7 +59,6 @@ export const auth = {
     },
   },
   getters: {
-    isAuthenticated: state => !!state.token,
-    currentUser: state => state.user,
+    currentUser: state =>  state.user
   },
 };

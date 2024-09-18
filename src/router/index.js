@@ -72,14 +72,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  let isAuthenticated =  store.getters.isAuthenticated; 
   let user = store.getters.currentUser
 
   if (to.meta.requiresAuth) {    
-    if (!isAuthenticated) {
+    if (!user) {
       store.dispatch('setFlashMessage', { message: 'Please log in to access this page.', type: 'warning' });
       next('/login'); 
-    } else if (to.meta.requiredRole && user.role !== to.meta.requiredRole) {
+    } else if (to.meta.requiredRole && user?.role !== to.meta.requiredRole) {
       store.dispatch('setFlashMessage', { message: 'You do not have the required permissions to access this page.', type: 'danger' });
       next('/'); 
     } else {

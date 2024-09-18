@@ -19,7 +19,7 @@
           <li class="nav-item">
             <router-link v-if="true" to="/organizer-dashboard" class="nav-link">Organizer Dashboard</router-link>
           </li>
-          <li class="nav-item" v-if="isAuthenticated">
+          <li class="nav-item" v-if="currentUser">
             <button @click="handleLogout" class="btn-secondary">Logout</button>
           </li>
           <li class="nav-item" v-else>
@@ -49,7 +49,7 @@ export default {
   name: "App",
   components:{FlashMessage},
   computed: {
-    ...mapGetters(['isAuthenticated', 'currentUser']),
+    ...mapGetters(['currentUser']),
   },
   methods: {
     ...mapActions(['logout']),

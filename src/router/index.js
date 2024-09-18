@@ -8,6 +8,8 @@ import LoginView from "@/views/LoginView.vue";
 import SignupView from "@/views/SignupView.vue";
 import OrganizerDashBoardView from "@/views/OrganizerDashBoardView.vue";
 import store from "@/store";
+import ScanTicketsView from "@/views/ScanTicketsView.vue";
+import ManageEventDetailsView from "@/views/ManageEventDetailsView.vue";
 
 const routes = [
   {
@@ -51,6 +53,17 @@ const routes = [
     component: OrganizerDashBoardView,
     meta: { requiresAuth: true, requiredRole: 'organizer' }
   },
+  {
+    path: '/event/:eventId',
+    name: 'ManageEventDetails',
+    component: ManageEventDetailsView,
+    props: true
+  },
+  {
+    path: '/scan-tickets/:eventId',
+    name: 'ScanTickets',
+    component: ScanTicketsView
+  }
 ];
 
 const router = createRouter({

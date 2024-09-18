@@ -42,7 +42,7 @@
           <input v-model="searchQuery" placeholder="Search events..." class="search-input" />
         </div>
         <EventManagement :events="filteredEvents" @edit-event="onEditEvent" @delete-event="onDeleteEvent"
-          @select-event="selectEvent" @cancel-event="onEditEvent"/>
+          @select-event="selectEvent" @cancel-event="onEditEvent" @view-tickets="onViewTickets"/>
       </div>
 
       <!-- Registered Users View -->
@@ -51,14 +51,14 @@
         <div class="user-controls">
           <select v-model="selectedEvent" @change="loadRegisteredUsers" class="event-select">
             <option value="">Select an event</option>
-            <option v-for="event in filteredEvents" :key="event.id" :value="event.id">
+            <option v-for="event in filteredEvents" :key="event.id" :value="event">
               {{ event.title }}
             </option>
           </select>
         </div>
         <div v-if="selectedEvent">
-          <h3>Users for {{ selectedEventName }}</h3>
-          <RegisteredUserList :eventId="selectedEvent" />
+          <h3>Users for {{ selectEvent.name }}</h3>
+          <RegisteredUserList :event="selectedEvent" />
           <ContactUserForm :users="registeredUsers" @send-message="handleSendMessage" />
         </div>
         <div v-else>
@@ -66,6 +66,10 @@
         </div>
       </div>
 
+      <!-- Ticket Management View -->
+      <div v-if="activeView === 'tickets'" class="dashboard-view" >
+        <TicketManagement :event="selectedEvent"/>
+      </div>
 
       <!-- Reports View -->
       <div v-if="activeView === 'reports'" class="dashboard-view">
@@ -81,6 +85,7 @@ import { mapActions, mapGetters } from 'vuex';
 import EventManagement from '@/components/EventManagement.vue';
 import RegisteredUserList from '@/components/RegisteredUserList.vue';
 import ContactUserForm from '@/components/ContactUserForm.vue';
+import TicketManagement from '@/components/TicketManagement.vue';
 
 export default {
   name: 'OrganizerDashboard',
@@ -88,6 +93,7 @@ export default {
     EventManagement,
     RegisteredUserList,
     ContactUserForm,
+    TicketManagement,
   },
   data() {
     return {
@@ -97,6 +103,7 @@ export default {
         { id: 'overview', name: 'Overview' },
         { id: 'events', name: 'Manage Events' },
         { id: 'users', name: 'Registered Users' },
+        { id: 'tickets', name: 'Ticket Management' },
         { id: 'reports', name: 'Reports' },
       ],
       searchQuery: '',
@@ -118,16 +125,11 @@ export default {
       return this.events.filter(event => {
         return event.title.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
           event.organizerId == this.currentUser?.id
-      }
-      );
-    },
-    selectedEventName() {
-      const event = this.events.find(e => e.id === this.selectedEvent);
-      return event ? event.title : '';
+      });
     },
   },
   methods: {
-    ...mapActions(['fetchEvents', 'fetchRegisteredUsers', 'sendUserMessage', 'cancelEvent', 'editEvent']),
+    ...mapActions(['fetchEvents', 'fetchRegisteredUsers', 'sendUserMessage', 'cancelEvent', 'rescheduleEvent', 'editEvent', ]),
     onEditEvent(event) {
       this.editEvent(event)
         .then(() => {
@@ -141,14 +143,18 @@ export default {
     onDeleteEvent(eventId) {
       console.log('Deleting event:', eventId);
     },
-    selectEvent(eventId) {
-      this.selectedEvent = eventId;
+    selectEvent(event) {
+      this.selectedEvent = event;
       this.loadRegisteredUsers();
       this.activeView = 'users';
     },
+    onViewTickets(event) {
+      this.selectedEvent = event;
+      this.activeView = 'tickets';
+    },
     loadRegisteredUsers() {
       if (this.selectedEvent) {
-        this.fetchRegisteredUsers(this.selectedEvent);
+        this.fetchRegisteredUsers(this.selectedEvent.id);
       }
     },
     toggleSidebar() {
@@ -157,7 +163,7 @@ export default {
     handleSendMessage({ userId, message }) {
       if (this.selectedEvent && userId && message) {
         this.sendUserMessage({ eventId: this.selectedEvent, userId, message });
-        console.log(`Sending message to user ${userId} for event ${this.selectedEvent}: ${message}`);
+        console.log(`Sending message to user ${userId} for event ${this.selectedEvent.title}: ${message}`);
       } else {
         console.error('Missing required information to send message');
       }
@@ -174,6 +180,45 @@ export default {
 </script>
 
 <style scoped>
+
+.ticket-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.generate-tickets-btn, .link-ticket-btn {
+  padding: 10px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.generate-tickets-btn:disabled, .link-ticket-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+.ticket-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.ticket-item {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+}
+
+.ticket-qr-code {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
 .dashboard-container {
   display: flex;
   height: 100vh;

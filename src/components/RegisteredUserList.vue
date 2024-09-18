@@ -23,8 +23,8 @@ export default {
     UserDetails
   },
   props: {
-    eventId: {
-      type: Number,
+    event: {
+      type: Object,
       required: true
     }
   },
@@ -43,12 +43,12 @@ export default {
     }
   },
   created() {
-    this.fetchRegisteredUsers(this.eventId);
+    this.fetchRegisteredUsers(this.event.id);
     console.log(this.registeredUsers)
   },
   watch: {
-    eventId(newEventId) {
-      this.fetchRegisteredUsers(newEventId);
+    event(newEvent) {
+      this.fetchRegisteredUsers(newEvent.id);
     }
   }
 };

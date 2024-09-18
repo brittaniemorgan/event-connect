@@ -12,7 +12,10 @@
         <p><strong>Status:</strong> {{ event.status }}</p>
         <button @click="openEditModal(event)" class="btn-primary">Edit</button>
         <button @click="selectEvent(event.id)" class="btn-secondary">View Participants</button>
+        <button @click="viewTickets(event)" class="btn-secondary">Manage Tickets</button>        
         <button @click="openCancelModal(event)" class="btn-warning">Cancel</button>
+        <button @click="viewEventDetail(event.id)" class="btn-primary">View Details</button>        
+        <button @click="scanTickets(event.id)" class="btn-primary">Scan Tickets</button>
         <!-- <button @click="confirmDeleteEvent(event.id)" class="btn-danger">Delete</button> -->
       </div>
     </div>
@@ -97,6 +100,15 @@ export default {
     handleCancelEvent(event) {
       this.$emit('cancel-event', event);
       this.showCancelModal = false;
+    },
+    viewTickets(event) {
+      this.$emit('view-tickets', event)
+    },
+    viewEventDetail(eventId) {
+      this.$router.push(`/event/${eventId}`);
+    },
+    scanTickets(eventId) {
+      this.$router.push(`/scan-tickets/${eventId}`);
     }
   }
 };

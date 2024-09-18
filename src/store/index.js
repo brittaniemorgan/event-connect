@@ -18,7 +18,8 @@ export default createStore({
       registeredEvents: [],
       registeredUsers: [],
       purchasedTickets: {},
-      userTickets: {}
+      userTickets: {},
+      tickets: [],
     };
   },
   mutations: {
@@ -84,7 +85,21 @@ export default createStore({
       if (eventIndex !== -1) {
         state.events[eventIndex] = { ...state.events[eventIndex], ...updatedEvent };
       }
-    }
+    },
+
+    addTicket(state, { ticket }) {
+      state.tickets.push(ticket);      
+      console.log(this.state.tickets);
+    },
+    setTickets(state, { tickets }) {
+      state.tickets = tickets;
+    },
+    editTicket(state, { updatedTicket }) {
+      const ticketIndex = state.tickets.findIndex(ticket => ticket.id === updatedTicket.id);
+      if (ticketIndex !== -1) {
+        state.tickets[ticketIndex] = { ...state.events[ticketIndex], ...updatedTicket };
+      }
+    },
   },
   actions: {
     async fetchEvents({ commit }) {
@@ -210,7 +225,35 @@ export default createStore({
         console.error('Failed to edit event:', error);
         throw error;
       }
-    }
+    },
+    async fetchTickets({ commit }, eventId) {
+      try {
+        const tickets = await eventService.getTickets(eventId);
+        commit('setTickets', { tickets });
+        return tickets;
+      } catch (error) {
+        console.error('Failed to generate mock tickets:', error);
+        throw error;
+      }
+    },
+    async addTicket({ commit }, newTicket) {
+      try {
+        const ticket = await eventService.addTicket(newTicket);
+        commit('addTicket', { ticket });
+      } catch (error) {
+        console.error('Failed to add ticket:', error);
+        throw error;
+      }
+    },
+    async editTicket({ commit }, updatedTicket) {
+      try {
+        await eventService.updateTicket(updatedTicket);
+        commit('editTicket', { updatedTicket });
+      } catch (error) {
+        console.error('Failed to edit event:', error);
+        throw error;
+      }
+    },
   },
   getters: {
     events: state => {
@@ -263,6 +306,9 @@ export default createStore({
     },
     hasUserPurchasedTicket: (state) => (userId, eventId) => {
       return state.userTickets[userId]?.[eventId] > 0;
+    },
+    tickets: (state) => {
+      return state.tickets;
     },
   }
 });

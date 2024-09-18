@@ -31,13 +31,57 @@ export const mockUsers = [
   { id: 7, name: "James Wilson", email: "james.wilson@example.com", password: "password123", role: "organizer" }
 ];
 
-export const mockPurchasedTickets = [
-  { id: 1, eventId: 1, email: "alice.johnson@example.com", quantity: 2, ticketType: "general", purchaseDate: "2024-08-15T10:30:00Z" },
-  { id: 2, eventId: 3, email: "alice.johnson@example.com", quantity: 1, ticketType: "vip", purchaseDate: "2024-08-20T14:45:00Z" },
-  { id: 3, eventId: 2, email: "bob.smith@example.com", quantity: 3, ticketType: "general", purchaseDate: "2024-09-01T09:15:00Z" },
-  { id: 4, eventId: 5, email: "charlie.brown@example.com", quantity: 2, ticketType: "general", purchaseDate: "2024-09-10T16:20:00Z" },
-  { id: 5, eventId: 6, email: "charlie.brown@example.com", quantity: 1, ticketType: "vip", purchaseDate: "2024-09-15T11:00:00Z" },
+export const mockTickets = [
+  { ticketId: 1, eventId: 1, qrCode: "QR_123456A", ticketType: "general" },
+  { ticketId: 2, eventId: 1, qrCode: "QR_123456B", ticketType: "vip" },
+  { ticketId: 3, eventId: 2, qrCode: "QR_123456C", ticketType: "general" },
+  { ticketId: 2, eventId: 3, qrCode: "QR_123456D", ticketType: "general" },
+  { ticketId: 2, eventId: 3, qrCode: "QR_123456E", ticketType: "general" },
+  { ticketId: 4, eventId: 5, qrCode: "QR_123456F", ticketType: "general" },
+  { ticketId: 5, eventId: 6, qrCode: "QR_123456G", ticketType: "general" },
+  { ticketId: 6, eventId: 7, qrCode: "QR_123456H", ticketType: "general" },
+  { ticketId: 7, eventId: 8, qrCode: "QR_123456I", ticketType: "general" }
 ];
+
+
+export const mockPurchasedTickets = [
+  {
+    id: 1,
+    ticketId: 1,
+    email: "alice.johnson@example.com",
+    quantity: 2,
+    purchaseDate: "2024-08-15T10:30:00Z"
+  },
+  {
+    id: 2,
+    ticketId: 2,
+    email: "alice.johnson@example.com",
+    quantity: 1,
+    purchaseDate: "2024-08-20T14:45:00Z"
+  },
+  {
+    id: 3,
+    ticketId: 3,
+    email: "bob.smith@example.com",
+    quantity: 3,
+    purchaseDate: "2024-09-01T09:15:00Z"
+  },
+  {
+    id: 4,
+    ticketId: 4,  
+    email: "charlie.brown@example.com",
+    quantity: 2,
+    purchaseDate: "2024-09-10T16:20:00Z"
+  },
+  {
+    id: 5,
+    ticketId: 2, 
+    email: "charlie.brown@example.com",
+    quantity: 1,
+    purchaseDate: "2024-09-15T11:00:00Z"
+  }
+];
+
 
 export const mockReviews = [
   {

@@ -1,4 +1,4 @@
-import { mockEvents, mockCategories, mockRegisteredEvents, mockReviews, mockPurchasedTickets } from '../assets/mockData';
+import { mockEvents, mockCategories, mockRegisteredEvents, mockReviews, mockPurchasedTickets, mockTickets } from '../assets/mockData';
 
 export default {
   async getEvents() {
@@ -127,6 +127,40 @@ export default {
         if (eventIndex !== -1) {
           mockEvents[eventIndex] = { ...mockEvents[eventIndex], ...newData };
           resolve(mockEvents[eventIndex]);
+        } else {
+          reject(new Error('Event not found'));
+        }
+      }, 500);
+    });
+  },
+
+  async addTicket(newTicket) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        newTicket.id = mockTickets.length + 1;
+        mockTickets.push(newTicket);
+        resolve(newTicket);
+      }, 500);
+    });
+  },
+  
+  async getTickets(eventId) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const tickets = mockTickets.filter(ticket => eventId ? ticket.eventId === eventId : true);
+        resolve(tickets);
+      }, 500);
+    });
+  },
+
+  async updateTicket(newData) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        console.log(newData); 
+        const ticketIndex = mockTickets.findIndex(ticket =>  ticket.ticketId === newData.ticketId);
+        if (ticketIndex !== -1) {
+          mockTickets[ticketIndex] = { ...mockTickets[ticketIndex], ...newData };
+          resolve(mockTickets[ticketIndex]);
         } else {
           reject(new Error('Event not found'));
         }

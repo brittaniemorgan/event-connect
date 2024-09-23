@@ -1,170 +1,205 @@
-import { mockEvents, mockCategories, mockRegisteredEvents, mockReviews, mockPurchasedTickets, mockTickets } from '../assets/mockData';
-
+const API_URL = `http://localhost:3000/v1`;
 export default {
   async getEvents() {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockEvents), 500);
-    });
+    return fetch(`${API_URL}/events`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching events:`, error);
+        throw error;
+      });
   },
 
   async getCategories() {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockCategories), 500);
-    });
+    return fetch(`${API_URL}/categories`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching categories:`, error);
+        throw error;
+      });
   },
 
   async addEvent(newEvent) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        newEvent.id = mockEvents.length + 1;
-        mockEvents.push(newEvent);
-        console.log(mockEvents);
-        resolve(newEvent);
-      }, 500);
-    });
+    return fetch(`${API_URL}/events`, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newEvent),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error adding event:`, error);
+        throw error;
+      });
   },
 
   async getEventDetails(id) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const event = mockEvents.find(event => event.id === parseInt(id));
-        if (event) {
-          resolve(event);
-        } else {
-          reject(new Error('Event not found'));
-        }
-      }, 500);
-    });
+    return fetch(`${API_URL}/events/${id}`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching event details:`, error);
+        throw error;
+      });
   },
+
   async registerForEvent(eventId, userEmail) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (!mockRegisteredEvents.find(reg => reg.eventId === eventId && reg.email === userEmail)) {
-          mockRegisteredEvents.push({ email: userEmail, eventId });
-          resolve({ success: true });
-        } else {
-          reject(new Error('Already registered for this event'));
-        }
-      }, 500);
-    });
+    return fetch(`${API_URL}/events/${eventId}/register`, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: userEmail }),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error registering for event:`, error);
+        throw error;
+      });
   },
 
   async getRegisteredEvents(userEmail) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const registeredEventIds = mockRegisteredEvents
-          .filter(reg => reg.email === userEmail)
-          .map(reg => reg.eventId);
-
-        resolve(registeredEventIds);
-      }, 500);
-    });
+    return fetch(`${API_URL}/users/${userEmail}/registered-events`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching registered events:`, error);
+        throw error;
+      });
   },
 
   async purchaseTicket(ticketData) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const newTicket = {
-          id: mockPurchasedTickets.length + 1,
-          ...ticketData,
-          purchaseDate: new Date().toISOString()
-        };
-        mockPurchasedTickets.push(newTicket);
-        resolve(newTicket);
-      }, 500);
-    });
+    return fetch(`${API_URL}/purchased-tickets`, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ticketData),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error purchasing ticket:`, error);
+        throw error;
+      });
   },
 
   async getPurchasedTickets(userEmail) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const tickets = mockPurchasedTickets.filter(ticket => ticket.email === userEmail);
-        resolve(tickets);
-      }, 500);
-    });
+    return fetch(`${API_URL}/purchased-tickets/?email=${userEmail}`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching purchased tickets:`, error);
+        throw error;
+      });
   },
 
   async getEventReviews(eventId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const reviews = mockReviews.filter(review => review.eventId == eventId);
-        resolve(reviews);
-      }, 500);
-    });
+    return fetch(`${API_URL}/reviews/${eventId}`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching event reviews:`, error);
+        throw error;
+      });
   },
 
-  async addReview(review) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        mockReviews.push(review);
-        resolve(review);
-      }, 500);
-    });
+  async addEventReview(review) {
+    return fetch(`${API_URL}/reviews`, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(review),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error adding review:`, error);
+        throw error;
+      });
   },
 
   async getRegisteredUsers(eventId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const users = mockPurchasedTickets.map(ticket => ({ ...ticket, ...mockTickets.filter(t => t.ticketId === ticket.ticketId)[0] })).filter(ticket => ticket.eventId === eventId);
-        resolve(users);
-      }, 500);
-    });
+    return fetch(`${API_URL}/purchased-tickets/?eventId=${eventId}`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching registered users:`, error);
+        throw error;
+      });
   },
 
   async getTicketHolders(eventId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const tickets = mockPurchasedTickets.filter(ticket => ticket.eventId === eventId);
-        resolve(tickets);
-      }, 500);
-    });
+    return fetch(`${API_URL}/events/${eventId}/ticket-holders`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching ticket holders:`, error);
+        throw error;
+      });
   },
+
   async updateEvent(newData) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(newData);
-        const eventIndex = mockEvents.findIndex(event => event.id === newData.id);
-        if (eventIndex !== -1) {
-          mockEvents[eventIndex] = { ...mockEvents[eventIndex], ...newData };
-          resolve(mockEvents[eventIndex]);
-        } else {
-          reject(new Error('Event not found'));
-        }
-      }, 500);
-    });
+    return fetch(`${API_URL}/events/${newData.id}`, {
+      method: `PUT`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newData),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error updating event:`, error);
+        throw error;
+      });
   },
 
   async addTicket(newTicket) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        newTicket.id = mockTickets.length + 1;
-        mockTickets.push(newTicket);
-        resolve(newTicket);
-      }, 500);
-    });
+    console.log(newTicket);
+    return fetch(`${API_URL}/tickets`, {
+      method: `POST`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newTicket),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error adding ticket:`, error);
+        throw error;
+      });
   },
 
   async getTickets(eventId) {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const tickets = mockTickets.filter(ticket => eventId ? ticket.eventId === eventId : true);
-        resolve(tickets);
-      }, 500);
-    });
+    return fetch(`${API_URL}/tickets/${eventId}`)
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error fetching tickets:`, error);
+        throw error;
+      });
   },
 
   async updateTicket(newData) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        console.log(newData);
-        const ticketIndex = mockTickets.findIndex(ticket => ticket.ticketId === newData.ticketId);
-        if (ticketIndex !== -1) {
-          mockTickets[ticketIndex] = { ...mockTickets[ticketIndex], ...newData };
-          resolve(mockTickets[ticketIndex]);
-        } else {
-          reject(new Error('Event not found'));
-        }
-      }, 500);
-    });
+    return fetch(`${API_URL}/tickets/${newData.id}`, {
+      method: `PUT`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newData),
+    })
+      .then(response => response.json())
+      .then(data => data)
+      .catch(error => {
+        console.error(`Error updating ticket:`, error);
+        throw error;
+      });
   },
 };

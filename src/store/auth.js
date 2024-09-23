@@ -1,4 +1,4 @@
-import { mockUsers } from '../assets/mockData';
+import { authService } from '@/services/authService';
 
 export const auth = {
   state: {
@@ -20,45 +20,34 @@ export const auth = {
     },
   },
   actions: {
-    async loginUser({ commit }, { email, password }) {
-      try {
-        const user = mockUsers.find(user => user.email === email && user.password === password);
-        if (!user) throw new Error('Invalid email or password');
-
-        commit('setUser', user);
-        commit('setToken', {role: user.role, name: user.name, email: user.email});
-      } catch (error) {
-        console.error('Login failed:', error);
-        throw error;
-      }
+    loginUser({ commit }, { email, password }) {
+      return authService.login(email, password)
+        .then(userData => {
+          commit('setUser', userData.user);
+          commit('setToken', userData.token);
+        })
+        .catch(error => {
+          console.error('Login failed:', error);
+          throw error;
+        });
     },
-    async signupUser({ commit }, { name, email, password }) {
-      try {
-        const existingUser = mockUsers.find(user => user.email === email);
-        if (existingUser) throw new Error('Email already in use');
-        const newUser = {
-          id: mockUsers.length + 1,
-          name,
-          email,
-          password,
-          role: 'user',
-        };
-        mockUsers.push(newUser);
-
-        const token = 'mock-token';
-
-        commit('setUser', newUser);
-        commit('setToken', token);
-      } catch (error) {
-        console.error('Signup failed:', error);
-        throw error;
-      }
+    signupUser({ commit }, { name, email, password }) {
+      return authService.signup(name, email, password)
+        .then(newUser => {
+          commit('setUser', newUser);
+          commit('setToken', newUser.token);
+        })
+        .catch(error => {
+          console.error('Signup failed:', error);
+          throw error;
+        });
     },
     logout({ commit }) {
+      authService.logout();
       commit('clearAuth');
     },
   },
   getters: {
-    currentUser: state =>  state.user
+    currentUser: state => state.user,
   },
 };

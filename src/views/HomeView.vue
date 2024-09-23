@@ -39,7 +39,7 @@ export default {
     ...mapGetters(['events', 'categories']),
     filteredEvents() {
       return this.events.filter(event =>
-        event.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        event.title?.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
   },

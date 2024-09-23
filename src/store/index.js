@@ -261,7 +261,7 @@ export default createStore({
 
       if (state.searchQuery) {
         filteredEvents = filteredEvents.filter(event =>
-          event.title.toLowerCase().includes(state.searchQuery.toLowerCase())
+          event.title?.toLowerCase().includes(state.searchQuery.toLowerCase())
         );
       }
 
@@ -271,7 +271,7 @@ export default createStore({
 
       if (state.selectedLocation) {
         filteredEvents = filteredEvents.filter(event =>
-          event.location.toLowerCase().includes(state.selectedLocation.toLowerCase())
+          event.location?.toLowerCase().includes(state.selectedLocation.toLowerCase())
         );
       }
 
@@ -303,9 +303,6 @@ export default createStore({
     },
     getTicketCount: (state) => (userId, eventId) => {
       return state.userTickets[userId]?.[eventId] || 0;
-    },
-    hasUserPurchasedTicket: (state) => (userId, eventId) => {
-      return state.userTickets[userId]?.[eventId] > 0;
     },
     tickets: (state) => {
       return state.tickets;

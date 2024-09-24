@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Ticket = sequelize.define('Ticket', {
-    ticketId: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
@@ -16,8 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     qrCode: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.STRING
     },
     ticketType: {
       type: DataTypes.STRING,

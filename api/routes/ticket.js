@@ -1,23 +1,38 @@
 const express = require('express');
+const qrcode = require('qrcode');
 const { Ticket } = require('../models'); 
 const authenticateToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+async function generateQRCode(data) {
+  try {
+    return await qrcode.toDataURL(JSON.stringify(data));
+  } catch (error) {
+    console.error('Error generating QR code:', error);
+    throw error;
+  }
+}
 
-router.post('/', authenticateToken, async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const newTicket = await Ticket.create(req.body);
+    const qrCodeDataURL = await generateQRCode({
+      id: newTicket.id,
+      ticketType: newTicket.ticketType,
+      eventId: newTicket.eventId
+    });    
+    newTicket.qrCode = qrCodeDataURL;
+    await newTicket.save()
     res.status(201).json(newTicket);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-
-router.get('/:eventId', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const tickets = await Ticket.findAll({ where: { eventId: req.params.eventId } });
+    const tickets = await Ticket.findAll({ where: { eventId: req.query.eventId } });
     res.json(tickets);
   } catch (error) {
     res.status(500).json({ error: error.message });

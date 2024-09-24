@@ -29,22 +29,30 @@ class EmailService {
       throw error;
     }
   }
-
   sendPurchaseEmail(data) {
     fetch(`${API_URL}/events/${data.eventId}`)
       .then(response => {
         if (!response.ok) {
           throw new Error('Event not found or could not fetch event details');
         }
-        return response.json(); 
+        return response.json();
       })
       .then(event => {
+        return fetch(`${API_URL}/tickets/${data.ticketId}`).then(ticketResponse => {
+          if (!ticketResponse.ok) {
+            throw new Error('QR code not found or could not fetch QR code');
+          }
+          return ticketResponse.json().then(ticket => ({ event, ticket }));
+        });
+      })
+      .then(({ event, ticket }) => {
         const subject = `Ticket Purchased: ${event.title}`;
         const html = `
           <h1>You have purchased ${data.quantity} ticket(s) for ${event.title}</h1>
           <p>Date: ${new Date(event.date).toLocaleString()}</p>
           <p>Location: ${event.location}</p>
           <p>Details: ${event.description}</p>
+          <img src="${ticket.qrCode}" alt="QR Code" />
         `;
         return this.sendEmail(data.email, subject, html);
       })

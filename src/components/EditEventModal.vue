@@ -69,7 +69,7 @@ export default {
   },
   data() {
     return {
-      eventData: { ...this.event } // Clone the event object to avoid mutating the original event directly
+      eventData: { ...this.event }
     };
   },
   computed: {

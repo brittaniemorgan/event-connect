@@ -1,9 +1,10 @@
 const express = require('express');
 const { Event } = require('../models'); 
+const authenticateToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const newEvent = await Event.create(req.body);
     res.status(201).json(newEvent);
@@ -35,7 +36,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const { title, date, location, status } = req.body;
     const [updated] = await Event.update({ title, date, location, status }, { where: { id: req.params.id } });
@@ -50,7 +51,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const deleted = await Event.destroy({ where: { id: req.params.id } });
     if (deleted) {

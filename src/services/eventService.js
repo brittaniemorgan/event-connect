@@ -1,3 +1,5 @@
+import { authService } from "./authService";
+
 const API_URL = `http://localhost:3000/v1`;
 export default {
   async getEvents() {
@@ -25,6 +27,7 @@ export default {
       method: `POST`,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authService.getToken()}`,
       },
       body: JSON.stringify(newEvent),
     })
@@ -149,6 +152,7 @@ export default {
       method: `PUT`,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authService.getToken()}`,
       },
       body: JSON.stringify(newData),
     })
@@ -166,6 +170,7 @@ export default {
       method: `POST`,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authService.getToken()}`,
       },
       body: JSON.stringify(newTicket),
     })
@@ -192,6 +197,7 @@ export default {
       method: `PUT`,
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authService.getToken()}`,
       },
       body: JSON.stringify(newData),
     })

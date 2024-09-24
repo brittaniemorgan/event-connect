@@ -3,16 +3,20 @@
     <h1>Sign Up</h1>
     <form @submit.prevent="signup">
       <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name" required>
+        <label for="name">First Name:</label>
+        <input type="text" id="name" v-model="form.firstName" required>
+      </div>
+      <div class="form-group">
+        <label for="name">Last Name:</label>
+        <input type="text" id="name" v-model="form.lastName" required>
       </div>
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" v-model="email" required>
+        <input type="email" id="email" v-model="form.email" required>
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" required>
+        <input type="password" id="password" v-model="form.password" required>
       </div>
       <button type="submit" :disabled="isLoading">{{ isLoading ? 'Signing up...' : 'Sign Up' }}</button>
     </form>
@@ -28,12 +32,15 @@ export default {
   name: 'SignupView',
   data() {
     return {
-      name: '',
-      email: '',
-      password: '',
+      form: {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+      },
       error: null,
       isLoading: false
-    };
+    }
   },
   methods: {
     ...mapActions(['signupUser']),
@@ -41,7 +48,7 @@ export default {
       this.isLoading = true;
       this.error = null;
       try {
-        await this.signupUser({ name: this.name, email: this.email, password: this.password });
+        await this.signupUser(this.form);
         this.$router.push('/');
       } catch (error) {
         this.error = error.message || 'Failed to sign up. Please try again.';

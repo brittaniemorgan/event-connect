@@ -1,10 +1,11 @@
 const express = require('express');
 const { Ticket } = require('../models'); 
+const authenticateToken = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     const newTicket = await Ticket.create(req.body);
     res.status(201).json(newTicket);
@@ -38,7 +39,7 @@ router.get('/:id', async (req, res) => {
 });
 
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     const [updated] = await Ticket.update( req.body, { where: { id: req.params.id } });
     if (updated) {
@@ -53,7 +54,7 @@ router.put('/:id', async (req, res) => {
 });
 
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const deleted = await Ticket.destroy({ where: { id: req.params.id } });
     if (deleted) {

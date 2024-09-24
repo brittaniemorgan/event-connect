@@ -31,8 +31,9 @@ export const auth = {
           throw error;
         });
     },
-    signupUser({ commit }, { name, email, password }) {
-      return authService.signup(name, email, password)
+
+    signupUser({ commit }, { firstName, lastName, email, password }) {
+      return authService.signup(firstName, lastName, email, password)
         .then(newUser => {
           commit('setUser', newUser);
           commit('setToken', newUser.token);

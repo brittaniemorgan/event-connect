@@ -1,6 +1,7 @@
 const express = require('express');
 const { Event } = require('../models'); 
 const authenticateToken = require('../middleware/authMiddleware');
+const emailService = require('../services/emailService');
 
 const router = express.Router();
 
@@ -42,6 +43,7 @@ router.put('/:id', authenticateToken, async (req, res) => {
     const [updated] = await Event.update({ title, date, location, status }, { where: { id: req.params.id } });
     if (updated) {
       const updatedEvent = await Event.findByPk(req.params.id);
+      emailService.sendEventUpdateEmail(updatedEvent, req.body);
       res.json(updatedEvent);
     } else {
       res.status(404).json({ error: 'Event not found' });

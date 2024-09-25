@@ -19,7 +19,7 @@
           <button @click="viewEventDetail(event.id)" class="btn-secondary">
             <i class="fas fa-info-circle"></i> View Details
           </button>
-          <button @click="openCancelModal(event.id)" class="btn-danger">
+          <button @click="openCancelModal(event)" class="btn-danger">
             <i class="fas fa-ban"></i> Cancel
           </button>
           <div class="dropdown">
@@ -77,6 +77,7 @@ export default {
       showAddEventModal: false,
       showEditEventModal: false,
       showCancelModal: false,
+      selectedEvent: null
     };
   },
   methods: {
@@ -127,7 +128,7 @@ export default {
       this.$emit('view-tickets', event)
     },
     viewEventDetail(eventId) {
-      this.$router.push(`/event/${eventId}`);
+      this.$router.push(`/events/${eventId}`);
     },
     scanTickets(eventId) {
       this.$router.push(`/scan-tickets/${eventId}`);

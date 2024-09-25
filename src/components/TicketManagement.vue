@@ -193,8 +193,7 @@ export default {
 
 <style scoped>
 .ticket-management {
-  max-width: 800px;
-  margin: 0 auto;
+  padding: 20px;
 }
 
 .add-ticket-type form,

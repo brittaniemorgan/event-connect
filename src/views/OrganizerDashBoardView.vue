@@ -73,7 +73,6 @@
 
       <!-- Reports View -->
       <div v-if="activeView === 'reports'" class="dashboard-view">
-        <h2>Reports</h2>
         <EventReport :eventId="selectEvent.id" />
       </div>
     </main>
@@ -296,11 +295,6 @@ export default {
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h2 {
-  margin-bottom: 20px;
-  color: #2c3e50;
 }
 
 .overview-view .overview-stats {

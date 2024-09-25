@@ -2,7 +2,9 @@
   <div class="event-management">
     <div class="header">
       <h2>Manage Events</h2>
-      <button @click="showAddEventModal = true" class="btn-primary">Create Event</button>
+      <button @click="showAddEventModal = true" class="btn-primary">
+        <i class="fas fa-plus"></i> Create Event
+      </button>
     </div>
     <div v-if="events.length">
       <div v-for="event in events" :key="event.id" class="event-card">
@@ -10,13 +12,33 @@
         <p><strong>Date:</strong> {{ formatDate(event.date) }}</p>
         <p><strong>Location:</strong> {{ event.location }}</p>
         <p><strong>Status:</strong> {{ event.status }}</p>
-        <button @click="openEditModal(event)" class="btn-primary">Edit</button>
-        <button @click="selectEvent(event.id)" class="btn-secondary">View Participants</button>
-        <button @click="viewTickets(event)" class="btn-secondary">Manage Tickets</button>        
-        <button @click="openCancelModal(event)" class="btn-warning">Cancel</button>
-        <button @click="viewEventDetail(event.id)" class="btn-primary">View Details</button>        
-        <button @click="scanTickets(event.id)" class="btn-primary">Scan Tickets</button>
-        <!-- <button @click="confirmDeleteEvent(event.id)" class="btn-danger">Delete</button> -->
+        <div class="button-group">
+          <button @click="openEditModal(event)" class="btn-primary">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button @click="viewEventDetail(event.id)" class="btn-secondary">
+            <i class="fas fa-info-circle"></i> View Details
+          </button>
+          <button @click="openCancelModal(event.id)" class="btn-danger">
+            <i class="fas fa-ban"></i> Cancel
+          </button>
+          <div class="dropdown">
+            <button class="btn dropdown-toggle">
+              More Actions <i class="fas fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+              <a @click="selectEvent(event.id)">
+                <i class="fas fa-users"></i> View Participants
+              </a>
+              <a @click="viewTickets(event)">
+                <i class="fas fa-ticket-alt"></i> Manage Tickets
+              </a>
+              <a @click="scanTickets(event.id)">
+                <i class="fas fa-qrcode"></i> Scan Tickets
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -24,11 +46,11 @@
     </div>
     <CreateEventModal v-if="showAddEventModal" @close="showAddEventModal = false" @event-created="onEventCreated" />
 
-    <EditEventModal v-if="showEditEventModal" :event="selectedEvent" @close="closeEditModal"
-      @edit-event="handleEditEvent" />
+    <EditEventModal v-if="showEditEventModal" :event="selectedEvent" @close="closeEditModal" 
+    @edit-event="handleEditEvent" />
 
-    <CancelEventModal v-if="showCancelModal" :event="selectedEvent" @close="closeCancelModal"
-      @cancel-event="handleCancelEvent" />
+    <CancelEventModal v-if="showCancelModal" :event="selectedEvent" @close="closeCancelModal" 
+    @cancel-event="handleCancelEvent" />
   </div>
 </template>
 
@@ -134,10 +156,12 @@ export default {
   margin-bottom: 15px;
 }
 
-.event-card button {
-  margin-right: 10px;
+.button-group {
+  display: flex;
+  gap: 10px;
 }
 
+.btn,
 .btn-primary,
 .btn-secondary,
 .btn-warning,
@@ -147,6 +171,10 @@ export default {
   border-radius: 4px;
   border: none;
   cursor: pointer;
+}
+
+.btn:hover{
+  background-color: #9f9b9b;
 }
 
 .btn-primary {
@@ -167,15 +195,6 @@ export default {
   background-color: #2980b9;
 }
 
-.btn-warning {
-  background-color: #f39c12;
-  color: white;
-}
-
-.btn-warning:hover {
-  background-color: #d35400;
-}
-
 .btn-danger {
   background-color: #e74c3c;
   color: white;
@@ -184,14 +203,34 @@ export default {
 .btn-danger:hover {
   background-color: #c0392b;
 }
-
-.btn-info {
-  background-color: #17a2b8;
-  color: white;
+.dropdown {
+  position: relative;
+  display: inline-block;
 }
 
-.btn-info:hover {
-  background-color: #138496;
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
 }
 
 .modal {

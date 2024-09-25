@@ -2,7 +2,7 @@
   <div class="event-report">
     <h2>Event Report</h2>
     <div class="event-selector">
-      <select v-model="selectedEventId" @change="fetchReport">
+      <select v-model="selectedEventId" @change="fetchReport" class="event-select">
         <option value="" disabled>Select an event</option>
         <option v-for="event in filteredEvents" :key="event.id" :value="event.id">
           {{ event.title }}
@@ -14,62 +14,67 @@
 
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="report">
-      <div class="report-summary">
-        <h3>{{ report.event.title }} Report</h3>
-        <div class="report-section">
-          <div class="report-item">
-            <strong>Total Tickets Sold:</strong>
-            <p>{{ report.totalTicketsSold }}</p>
-          </div>
-          <div class="report-item">
-            <strong>Total Revenue:</strong>
-            <p>${{ report.totalRevenue?.toFixed(2) }}</p>
-          </div>
-          <div class="report-item">
-            <strong>Average Rating:</strong>
-            <p>{{ report.reviewSummary.averageRating?.toFixed(1) }}</p>
+    <div v-if="selectedEvent">
+      <div v-if="report">
+        <div class="report-summary">
+          <h3>{{ report.event.title }} Report</h3>
+          <div class="report-section">
+            <div class="report-item">
+              <strong>Total Tickets Sold:</strong>
+              <p>{{ report.totalTicketsSold }}</p>
+            </div>
+            <div class="report-item">
+              <strong>Total Revenue:</strong>
+              <p>${{ report.totalRevenue?.toFixed(2) }}</p>
+            </div>
+            <div class="report-item">
+              <strong>Average Rating:</strong>
+              <p>{{ report.reviewSummary.averageRating?.toFixed(1) }}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Tickets Sold Per Day-->
-      <div class="chart-container">
-        <h4>Tickets Sold Per Day</h4>
-        <div v-if="chartSeries.length > 0">
-          <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries"></apexchart>
-        </div>
-        <div v-else>
-          <p>No ticket sales data available.</p>
-        </div>
-      </div>
-
-      <!-- Top 5 Users -->
-      <div class="top-users">
-        <h4>Top 5 Users</h4>
-        <ul v-if="report.topUsers.length > 0">
-          <li v-for="user in report.topUsers" :key="user.id">
-            {{ user.name }} ({{ user.email }}) - {{ user.ticketCount }} tickets
-          </li>
-        </ul>
-        <div v-else>
-          <p>No top users available for this event.</p>
-        </div>
-      </div>
-
-      <!-- Recent Reviews -->
-      <div class="recent-reviews">
-        <h4>Recent Reviews</h4>
-        <div v-if="report.reviewSummary.recentReviews.length > 0">
-          <div v-for="review in report.reviewSummary.recentReviews" :key="review.id" class="review-item">
-            <p><strong>{{ review.userName }}</strong> rated it {{ review.rating }} stars</p>
-            <p>{{ review.text }}</p>
+        <!-- Tickets Sold Per Day-->
+        <div class="chart-container">
+          <h4>Tickets Sold Per Day</h4>
+          <div v-if="chartSeries.length > 0">
+            <apexchart type="line" height="350" :options="chartOptions" :series="chartSeries"></apexchart>
+          </div>
+          <div v-else>
+            <p>No ticket sales data available.</p>
           </div>
         </div>
-        <div v-else>
-          <p>No reviews available for this event.</p>
+
+        <!-- Top 5 Users -->
+        <div class="top-users">
+          <h4>Top 5 Users</h4>
+          <ul v-if="report.topUsers.length > 0">
+            <li v-for="user in report.topUsers" :key="user.id">
+              {{ user.name }} ({{ user.email }}) - {{ user.ticketCount }} tickets
+            </li>
+          </ul>
+          <div v-else>
+            <p>No top users available for this event.</p>
+          </div>
+        </div>
+
+        <!-- Recent Reviews -->
+        <div class="recent-reviews">
+          <h4>Recent Reviews</h4>
+          <div v-if="report.reviewSummary.recentReviews.length > 0">
+            <div v-for="review in report.reviewSummary.recentReviews" :key="review.id" class="review-item">
+              <p><strong>{{ review.userName }}</strong> rated it {{ review.rating }} stars</p>
+              <p>{{ review.text }}</p>
+            </div>
+          </div>
+          <div v-else>
+            <p>No reviews available for this event.</p>
+          </div>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <p>Please select an event to view reports.</p>
     </div>
   </div>
 </template>
@@ -84,8 +89,7 @@ export default {
   },
   props: {
     eventId: {
-      type: Number,
-      required: true
+      type: Number
     }
   },
   data() {
@@ -166,16 +170,16 @@ export default {
   padding: 20px;
 }
 
-.event-selector {
-  margin-bottom: 20px;
+.event-select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+  width: 100%;
 }
 
-.event-selector select {
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  width: 100%;
-  max-width: 300px;
+.event-select {
+  flex: 1;
 }
 
 .loading {

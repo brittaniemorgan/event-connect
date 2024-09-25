@@ -51,7 +51,7 @@ const routes = [
     path: '/organizer-dashboard',
     name: 'OrganizerDashboard',
     component: OrganizerDashBoardView,
-    meta: { requiresAuth: true, requiredRole: 'organizer' }
+    meta: { requiresAuth: true }
   },
   /*
   {
@@ -75,13 +75,10 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   let user = store.getters.currentUser
 
-  if (to.meta.requiresAuth) {    
+  if (to.meta.requiresAuth) {
     if (!user) {
       store.dispatch('setFlashMessage', { message: 'Please log in to access this page.', type: 'warning' });
-      next('/login'); 
-    } else if (to.meta.requiredRole && user?.role !== to.meta.requiredRole) {
-      store.dispatch('setFlashMessage', { message: 'You do not have the required permissions to access this page.', type: 'danger' });
-      next('/'); 
+      next('/login');
     } else {
       next(); 
     }

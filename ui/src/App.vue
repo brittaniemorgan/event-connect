@@ -1,4 +1,5 @@
 <template>
+  <h1>LATEST UPDATE</h1>
   <div id="app">
     <nav class="navbar">
       <div class="container">

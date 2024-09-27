@@ -73,7 +73,7 @@
 
       <!-- Reports View -->
       <div v-if="activeView === 'reports'" class="dashboard-view">
-        <EventReport :eventId="selectEvent.id" />
+        <!--<EventReport :eventId="selectEvent.id" />-->
       </div>
     </main>
   </div>
@@ -85,7 +85,7 @@ import EventManagement from '@/components/EventManagement.vue';
 import RegisteredUserList from '@/components/RegisteredUserList.vue';
 import ContactUserForm from '@/components/ContactUserForm.vue';
 import TicketManagement from '@/components/TicketManagement.vue';
-import EventReport from '@/components/EventReport.vue';
+/*import EventReport from '@/components/EventReport.vue';*/
 
 export default {
   name: 'OrganizerDashboard',
@@ -94,7 +94,7 @@ export default {
     RegisteredUserList,
     ContactUserForm,
     TicketManagement,
-    EventReport
+    /*EventReport*/
   },
   data() {
     return {

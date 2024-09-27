@@ -1,6 +1,6 @@
 import { authService } from "./authService";
 
-const API_URL = `http://localhost:3000/v1`;
+const API_URL = process.env.VUE_APP_API_URL;
 export default {
   async getEvents() {
     return fetch(`${API_URL}/events`)

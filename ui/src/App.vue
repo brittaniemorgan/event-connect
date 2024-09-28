@@ -5,7 +5,7 @@
         <router-link to="/" class="navbar-brand">Event Connect</router-link>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/" class="nav-link">CHE</router-link>
+            <router-link to="/" class="nav-link">Home</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/events" class="nav-link">Events</router-link>

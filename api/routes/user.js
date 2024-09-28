@@ -36,7 +36,8 @@ router.post('/signup', async (req, res) => {
       firstName: newUser.firstName,
       lastName: newUser.lastName,
       email: newUser.email,
-      role: newUser.role
+      role: newUser.role,
+      p: newUser.password
     });
   } catch (error) {
     console.error(error);

@@ -76,7 +76,7 @@ export default {
   },
 
   async purchaseTicket(ticketData) {
-    return fetch(`${API_URL}/purchased-tickets`, {
+    return fetch(`http://localhost:3000/v1/purchased-tickets`, {
       method: `POST`,
       headers: {
         'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ export default {
   },
 
   async getTickets(eventId) {
-    return fetch(`${API_URL}/tickets/${eventId}`)
+    return fetch(`${API_URL}/tickets/?eventId=${eventId}`)
       .then(response => response.json())
       .then(data => data)
       .catch(error => {
@@ -191,7 +191,7 @@ export default {
         throw error;
       });
   },
-
+  
   async updateTicket(newData) {
     return fetch(`${API_URL}/tickets/${newData.id}`, {
       method: `PUT`,

@@ -79,7 +79,7 @@ export default {
 }
 
 .navbar {
-  background-color: #0a6320;
+  background-color: #1f0a63;
   padding: 10px 20px;
 }
 

@@ -14,7 +14,7 @@
 
     <div v-if="error" class="error">{{ error }}</div>
 
-    <div v-if="selectedEvent">
+    <div v-if="selectedEventId">
       <div v-if="report">
         <div class="report-summary">
           <h3>{{ report.event.title }} Report</h3>
@@ -125,13 +125,13 @@ export default {
   methods: {
     ...mapActions(['fetchEvents']),
     async fetchReport() {
-      if (!this.eventId) return;
+      if (!this.selectedEventId) return;
 
       this.loading = true;
       this.error = null;
 
       try {
-        const response = await fetch(`http://localhost:3000/v1/reports/${this.eventId}`);
+        const response = await fetch(`http://localhost:3000/v1/reports/${this.selectedEventId}`);
         if (!response.ok) throw new Error('Failed to fetch report');
         this.report = await response.json();
         this.prepareChart();

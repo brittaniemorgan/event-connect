@@ -26,7 +26,7 @@ async function generateEventReport(eventId) {
     include: {
       model: Ticket,
       as: 'ticket',
-      where: { eventId: eventId } 
+      where: { eventId: eventId }
     }
   });
 
@@ -34,8 +34,8 @@ async function generateEventReport(eventId) {
   const totalRevenue = purchasedTickets.reduce((sum, purchase) => sum + (purchase.quantity * purchase.ticket.price), 0);
 
   const ticketsSoldPerDay = purchasedTickets.reduce((acc, purchase) => {
-    const date = purchase.purchaseDate.toISOString().split('T')[0]; 
-    acc[date] = (acc[date] || 0) + purchase.quantity; 
+    const date = purchase.purchaseDate.toISOString().split('T')[0];
+    acc[date] = (acc[date] || 0) + purchase.quantity;
     return acc;
   }, {});
 
@@ -47,6 +47,7 @@ async function generateEventReport(eventId) {
     include: [{
       model: Ticket,
       as: 'ticket',
+      attributes: [],
       where: { eventId: eventId }
     }],
     group: ['email'],
@@ -73,7 +74,7 @@ async function generateEventReport(eventId) {
     totalRevenue: totalRevenue,
     ticketsSoldPerDay,
     topUsers: topUsers.map(user => ({
-      name: ` ${user.firstName} ${user.lastName}`, 
+      name: ` ${user.firstName} ${user.lastName}`,
       email: user.email,
       ticketCount: user.dataValues.ticketCount,
     })),
@@ -83,8 +84,8 @@ async function generateEventReport(eventId) {
       recentReviews: reviews.slice(0, 5).map(review => ({
         rating: review.rating,
         text: review.text,
-        userName: ` ${review.User.firstName} ${review.User.lastName}`,  
-        userEmail: review.User.email 
+        userName: ` ${review.User.firstName} ${review.User.lastName}`,
+        userEmail: review.User.email
       }))
     },
   };

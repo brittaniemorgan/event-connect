@@ -5,7 +5,13 @@ require('dotenv').config();
 db = {};
 if (process.env.PROD_DB_URL) {
   sequelize = new Sequelize(process.env.PROD_DB_URL, {
-    dialect: 'postgres'
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
   });
 } else {
   const dbConfig = {

@@ -58,7 +58,7 @@
     <div v-if="showEditModal" class="modal">
       <div class="modal-content">
         <h3>Edit Ticket: {{ selectedEvent.title }} {{ selectedTicket.ticketType }}</h3>
-        <form @submit.prevent="updateTicket">          
+        <form @submit.prevent="updateTicket">
           <div class="form-group">
             <label for="cost">Ticket Type:</label>
             <input v-model="selectedTicket.ticketType" required />
@@ -131,10 +131,8 @@ export default {
   computed: {
     ...mapGetters(['events', 'tickets', 'currentUser']),
     filteredEvents() {
-      return this.events.filter(event => {
-        return event.organizerId == this.currentUser?.id
-      });
-    }
+      return this.events.filter(event => event.organizerId == this.currentUser?.id || this.currentUser?.role === 'admin');
+    },
   },
   methods: {
     ...mapActions(['fetchEvents', 'addTicket', 'editTicket', 'fetchTickets']),
@@ -157,7 +155,7 @@ export default {
       this.selectedTicket = ticket;
     },
     deleteTicket() {
-      this.editTicket({...this.selectedTicket, deleted : 1});
+      this.editTicket({ ...this.selectedTicket, deleted: 1 });
       this.closeDeleteModal();
     },
     closeDeleteModal() {
@@ -184,7 +182,13 @@ export default {
   },
   created() {
     this.fetchEvents();
-    if (this.filteredEvents.length) {
+
+    if (sessionStorage.getItem('eventId')) {
+      this.selectedEvent = this.events.find(event => event.id == sessionStorage.getItem('eventId'));
+      sessionStorage.removeItem('eventId');
+    }
+
+    if (this.filteredEvents.length && this.selectedEvent) {
       this.fetchTickets(this.selectedEvent?.id);
     }
   }

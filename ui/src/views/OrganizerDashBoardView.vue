@@ -42,7 +42,7 @@
           <input v-model="searchQuery" placeholder="Search events..." class="search-input" />
         </div>
         <EventManagement :events="filteredEvents" @edit-event="onEditEvent" @delete-event="onDeleteEvent"
-          @select-event="selectEvent" @cancel-event="onEditEvent" @view-tickets="onViewTickets"/>
+          @select-event="selectEvent" @cancel-event="onEditEvent" @view-tickets="onViewTickets" />
       </div>
 
       <!-- Registered Users View -->
@@ -67,8 +67,8 @@
       </div>
 
       <!-- Ticket Management View -->
-      <div v-if="activeView === 'tickets'" class="dashboard-view" >
-        <TicketManagement :event="selectedEvent"/>
+      <div v-if="activeView === 'tickets'" class="dashboard-view">
+        <TicketManagement :event="selectedEvent" />
       </div>
 
       <!-- Reports View -->
@@ -125,12 +125,12 @@ export default {
     filteredEvents() {
       return this.events.filter(event => {
         return event.title?.toLowerCase().includes(this.searchQuery.toLowerCase()) &&
-          event.organizerId == this.currentUser?.id
+          event.organizerId == this.currentUser?.id || this.currentUser?.role === 'admin';
       });
     },
   },
   methods: {
-    ...mapActions(['fetchEvents', 'fetchRegisteredUsers', 'sendUserMessage', 'cancelEvent', 'rescheduleEvent', 'editEvent', ]),
+    ...mapActions(['fetchEvents', 'fetchRegisteredUsers', 'sendUserMessage', 'cancelEvent', 'rescheduleEvent', 'editEvent',]),
     onEditEvent(event) {
       this.editEvent(event)
         .then(() => {
@@ -176,19 +176,31 @@ export default {
       this.showCreateEventModal = true;
       this.activeView = 'events';
     }
-  }
+  },
+
+  watch: {
+    '$route.query': {
+      handler(newQuery) {
+        if (newQuery['tickets'] === 'true') {
+          sessionStorage.setItem('eventId', this.$route.query['eventId']);
+          this.activeView = 'tickets';
+        }
+      },
+      immediate: true,
+    },
+  },
 };
 </script>
 
 <style scoped>
-
 .ticket-controls {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
 }
 
-.generate-tickets-btn, .link-ticket-btn {
+.generate-tickets-btn,
+.link-ticket-btn {
   padding: 10px;
   background-color: #3498db;
   color: white;
@@ -197,7 +209,8 @@ export default {
   cursor: pointer;
 }
 
-.generate-tickets-btn:disabled, .link-ticket-btn:disabled {
+.generate-tickets-btn:disabled,
+.link-ticket-btn:disabled {
   background-color: #bdc3c7;
   cursor: not-allowed;
 }
@@ -220,6 +233,7 @@ export default {
   height: auto;
   margin: 10px 0;
 }
+
 .dashboard-container {
   display: flex;
   height: 100vh;

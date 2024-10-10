@@ -124,6 +124,7 @@ export default createStore({
       try {
         const event = await eventService.addEvent(newEvent);
         commit('addEvent', event);
+        return event;
       } catch (error) {
         console.error('Failed to add event:', error);
         throw error;

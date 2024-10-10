@@ -106,9 +106,18 @@ export default {
       this.updateFilter('date', "");
     },
     async loadEvents() {
-      this.loading = true;
-      await this.fetchEvents();
-      this.loading = false;
+      this.loading = this.events.length === 0;
+      const loadingTimer = setTimeout(() => {
+        if (this.loading) {
+          alert("Events are taking longer than expected to load due to server restraints. Events will be displayed shortly.");
+        }
+      }, 3000);
+      try {
+        await this.fetchEvents();
+      } finally {
+        this.loading = false;
+        clearTimeout(loadingTimer);
+      }
     }
   },
   created() {

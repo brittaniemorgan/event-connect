@@ -31,16 +31,6 @@
           <label for="description">Event Description:</label>
           <textarea v-model="form.description" id="description" required></textarea>
         </div>
-        
-        <div class="form-group">
-          <label for="cost">Ticket Cost:</label>
-          <input type="number" v-model="form.cost" id="cost" required />
-        </div>
-
-        <div class="form-group">
-          <label for="quantity">Quantity Available:</label>
-          <input type="number" v-model="form.quantity" id="quantity" required />
-        </div>
 
         <div class="form-group">
           <label for="image">Event Image:</label>
@@ -74,7 +64,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['categories'])
+    ...mapGetters(['categories', 'currentUser'])
   },
   methods: {
     ...mapActions(['addEvent']),
@@ -85,7 +75,7 @@ export default {
 
       if (!fileType.startsWith('image/')) {
         alert('Only image files are allowed.');
-        this.$refs.imageInput.value = ''; 
+        this.$refs.imageInput.value = '';
       } else if (file.size > maxSize) {
         alert('File size exceeds 2MB.');
         this.$refs.imageInput.value = '';
@@ -94,11 +84,25 @@ export default {
       }
     }
     ,
-    
+
     async submitForm() {
       try {
-        await this.addEvent(this.form);
+        const formData = new FormData();
+        formData.append('title', this.form.title);
+        formData.append('date', this.form.date);
+        formData.append('location', this.form.location);
+        formData.append('category', this.form.category);
+        formData.append('description', this.form.description);
+        formData.append('organizerId', this.currentUser.id);
+        formData.append('status', "Upcoming");
+
+        if (this.form.image) {
+          formData.append('image', this.form.image);
+        }
+        let newEvent = await this.addEvent(formData);
         this.$emit('event-created');
+
+        this.$router.push(`/organizer-dashboard?tickets=true&eventId=${newEvent.id}`);
       } catch (error) {
         console.error('Error adding event:', error);
       }
@@ -126,7 +130,7 @@ export default {
   border-radius: 8px;
   max-width: 500px;
   width: 100%;
-  max-height: 80vh; 
+  max-height: 80vh;
   overflow-y: auto;
 }
 
@@ -136,7 +140,7 @@ export default {
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;  
+  margin-bottom: 5px;
   font-size: 0.8rem;
 }
 

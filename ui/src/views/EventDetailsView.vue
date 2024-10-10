@@ -9,7 +9,7 @@
       <p><strong>Status:</strong> <span :class="statusClass">{{ event.status }}</span></p>
       <p><strong>Organizer:</strong> {{ event.organizerId }}</p>
       <p><strong>Description:</strong></p>
-      <p>{{ event.description }}</p>      
+      <p>{{ event.description }}</p>
 
       <div v-if="getImagePath(event.image)" class="event-image">
         <img :src="getImagePath(event.image)" :alt="event.title + ' Image'" />
@@ -103,7 +103,7 @@ export default {
     },
     getImagePath(imageName) {
       try {
-        const images = require.context('../assets/event_images', false, /\.(png|jpg|jpeg)$/);
+        const images = require.context(process.env.VUE_APP_UPLOADS_FOLDER, false, /\.(png|jpg|jpeg)$/);
         return images(`./${imageName}`) || images('./fallback_image.png');
       } catch (e) {
         return require('../assets/event_images/fallback_image.png');
@@ -157,8 +157,8 @@ export default {
 .event-image {
   width: 100%;
   max-width: 600px;
-  height: 300px; 
-  overflow: hidden; 
+  height: 300px;
+  overflow: hidden;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin-top: 20px;

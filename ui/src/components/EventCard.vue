@@ -30,7 +30,7 @@ export default {
   methods: {
     getImagePath(imageName) {
       try {
-        const images = require.context('../assets/event_images', false, /\.(png|jpg|jpeg)$/);
+        const images = require.context(`${process.env.VUE_APP_UPLOADS_FOLDER}`, false, /\.(png|jpg|jpeg)$/);
         return images(`./${imageName}`) || images('./fallback_image.png');
       } catch (e) {
         return require('../assets/event_images/fallback_image.png');

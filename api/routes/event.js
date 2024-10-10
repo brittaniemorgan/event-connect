@@ -1,13 +1,41 @@
 const express = require('express');
-const { Event } = require('../models'); 
+const { Event } = require('../models');
 const authenticateToken = require('../middleware/authMiddleware');
 const emailService = require('../services/emailService');
+const multer = require('multer');
+const path = require('path');
+require('dotenv').config();
 
 const router = express.Router();
 
-router.post('/', authenticateToken, async (req, res) => {
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, process.env.UPLOADS_FOLDER);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/')) {
+    cb(null, true);
+  } else {
+    cb(new Error('Only image files are allowed!'), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 2 * 1024 * 1024 }
+});
+
+
+router.post('/', authenticateToken, upload.single('image'), async (req, res) => {
   try {
-    const newEvent = await Event.create(req.body);
+    const image = req.file ? req.file.filename : null;
+    const newEvent = await Event.create({ ...req.body, image: image });
     res.status(201).json(newEvent);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -37,13 +65,14 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.put('/:id', authenticateToken, async (req, res) => {
+router.put('/:id', authenticateToken, upload.single('image'), async (req, res) => {
   try {
-    const { title, date, location, status } = req.body;
-    const [updated] = await Event.update({ title, date, location, status }, { where: { id: req.params.id } });
+    const { title, date, location, category, status } = req.body;
+    const image = req.file ? req.file.filename : null;
+    const [updated] = await Event.update({ title, date, location, status, category, image }, { where: { id: req.params.id } });
     if (updated) {
       const updatedEvent = await Event.findByPk(req.params.id);
-      emailService.sendEventUpdateEmail(updatedEvent, req.body);
+      //emailService.sendEventUpdateEmail(updatedEvent, {...req.body, image: image});
       res.json(updatedEvent);
     } else {
       res.status(404).json({ error: 'Event not found' });

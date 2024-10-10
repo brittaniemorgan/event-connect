@@ -26,10 +26,9 @@ export default {
     return fetch(`${API_URL}/events`, {
       method: `POST`,
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${authService.getToken()}`,
       },
-      body: JSON.stringify(newEvent),
+      body: newEvent,
     })
       .then(response => response.json())
       .then(data => data)
@@ -148,13 +147,12 @@ export default {
   },
 
   async updateEvent(newData) {
-    return fetch(`${API_URL}/events/${newData.id}`, {
+    return fetch(`${API_URL}/events/${newData.get('id')}`, {
       method: `PUT`,
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${authService.getToken()}`,
       },
-      body: JSON.stringify(newData),
+      body: newData,
     })
       .then(response => response.json())
       .then(data => data)

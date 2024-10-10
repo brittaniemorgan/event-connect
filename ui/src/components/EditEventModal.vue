@@ -33,18 +33,8 @@
         </div>
 
         <div class="form-group">
-          <label for="cost">Ticket Cost:</label>
-          <input type="number" v-model="eventData.cost" id="cost" required />
-        </div>
-
-        <div class="form-group">
-          <label for="quantity">Quantity Available:</label>
-          <input type="number" v-model="eventData.quantity" id="quantity" required />
-        </div>
-
-        <div class="form-group">
           <label for="image">Event Image:</label>
-          <input type="file" @change="onFileChange" id="image" ref="imageInput" />
+          <input type="file" @change="onFileChange"  id="image" ref="imageInput" />
         </div>
 
         <div class="button-group">
@@ -69,7 +59,7 @@ export default {
   },
   data() {
     return {
-      eventData: { ...this.event }
+      eventData: { ...this.event, image: null },
     };
   },
   computed: {
@@ -78,13 +68,25 @@ export default {
   methods: {
     ...mapActions(['fetchCategories']),
     submitEditEvent() {
+      const formData = new FormData();
+      formData.append('id', this.eventData.id);
+      formData.append('title', this.eventData.title);
+      formData.append('date', this.eventData.date);
+      formData.append('location', this.eventData.location);
+      formData.append('category', this.eventData.category);
+      formData.append('description', this.eventData.description);
+      formData.append('status', "Upcoming");
+
+      if (this.eventData.image) {
+        formData.append('image', this.eventData.image);
+      }
       if (this.eventData.date !== this.event.date) {
         if (confirm('The event date has been changed. Would you like to reschedule the event?')) {
-          this.$emit('edit-event', this.eventData);
+          this.$emit('edit-event', formData);
           this.$emit('close');
         }
       } else {
-        this.$emit('edit-event', this.eventData);
+        this.$emit('edit-event', formData);
         this.$emit('close');
       }
     },
@@ -95,12 +97,12 @@ export default {
 
       if (!fileType.startsWith('image/')) {
         alert('Only image files are allowed.');
-        this.$refs.imageInput.value = ''; 
+        this.$refs.imageInput.value = '';
       } else if (file.size > maxSize) {
         alert('File size exceeds 2MB.');
         this.$refs.imageInput.value = '';
       } else {
-        this.form.image = file;
+        this.eventData.image = file;
       }
     }
   },
@@ -129,7 +131,7 @@ export default {
   border-radius: 8px;
   max-width: 500px;
   width: 100%;
-  max-height: 80vh; 
+  max-height: 80vh;
   overflow-y: auto;
 }
 

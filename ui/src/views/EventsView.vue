@@ -42,6 +42,7 @@
     </section>
 
     <section class="event-grid">
+      <div v-if="loading" class="loading">Loading...</div>
       <EventCard v-for="event in events" :key="event.id" :event="event" />
     </section>
   </div>
@@ -61,7 +62,10 @@ export default {
       searchQuery: "",
       selectedCategory: "",
       selectedLocation: "",
-      selectedDate: ""
+      selectedDate: "",
+      loading: true,
+      showLoadingPopup: false,
+      loadingTimer: null
     };
   },
   computed: {
@@ -84,10 +88,10 @@ export default {
           this.setSelectedCategory(value);
           break;
         case 'location':
-          this.setSelectedLocation(value)
+          this.setSelectedLocation(value);
           break;
         case 'date':
-          this.setSelectedDate(value)
+          this.setSelectedDate(value);
           break;
       }
     },
@@ -101,10 +105,15 @@ export default {
       this.updateFilter('location', "");
       this.updateFilter('date', "");
     },
+    async loadEvents() {
+      this.loading = true;
+      await this.fetchEvents();
+      this.loading = false;
+    }
   },
   created() {
-    this.fetchEvents();
     this.fetchCategories();
+    this.loadEvents();
   }
 };
 </script>
@@ -213,5 +222,18 @@ header a {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+}
+
+.loading-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
 }
 </style>

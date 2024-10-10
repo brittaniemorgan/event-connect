@@ -12,6 +12,7 @@
     <section class="featured-events">
       <h2>Featured Events</h2>
       <div class="event-list">
+        <div v-if="loading" class="loading">Loading...</div>
         <EventCard v-for="event in filteredEvents" :key="event.id" :event="event" />
       </div>
       <router-link to="/events" class="nav-link">
@@ -33,6 +34,7 @@ export default {
   data() {
     return {
       searchQuery: "",
+      loading: true
     };
   },
   computed: {
@@ -45,9 +47,15 @@ export default {
   },
   methods: {
     ...mapActions(['fetchEvents', 'fetchCategories']),
+
+    async loadEvents() {
+      this.loading = true;
+      await this.fetchEvents();
+      this.loading = false;
+    }
   },
   created() {
-    this.fetchEvents();
+    this.loadEvents();
     this.fetchCategories();
   }
 };

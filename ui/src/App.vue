@@ -29,7 +29,7 @@
       </div>
     </nav>    
     <template v-if="currentUser">
-      <p class="greeting">Welcome, {{ currentUser.name }}!</p>
+      <p class="greeting">Welcome, {{ currentUser.firstName }} {{currentUser.lastName}}!</p>
     </template>
     <FlashMessage />
     <router-view class="content"></router-view>

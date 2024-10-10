@@ -119,7 +119,7 @@ export default {
   computed: {
     ...mapGetters(['events', 'currentUser']),
     filteredEvents() {
-      return this.events.filter(event => event.organizerId == this.currentUser?.id);
+      return this.events.filter(event => event.organizerId == this.currentUser?.id || this.currentUser?.role === 'admin');
     },
   },
   methods: {

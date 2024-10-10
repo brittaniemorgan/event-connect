@@ -26,7 +26,7 @@ export const mockUsers = [
   { id: 2, name: "Bob Smith", email: "bob.smith@example.com", password: "password123", role: "user" },
   { id: 3, name: "Charlie Brown", email: "charlie.brown@example.com", password: "password123", role: "user" },
   { id: 4, name: "Diana Prince", email: "diana.prince@example.com", password: "password123", role: "admin" },
-  { id: 5, name: "Evan Williams", email: "evan.williams@example.com", password: "password123", role: "admin" },
+  { id: 5, name: "Event Admin", email: "admin@example.com", password: "password123", role: "admin" },
   { id: 6, name: "Sophia Lee", email: "sophia.lee@example.com", password: "password123", role: "organizer" },
   { id: 7, name: "James Wilson", email: "james.wilson@example.com", password: "password123", role: "organizer" }
 ];

@@ -15,7 +15,8 @@ export default {
   data() {
     return {
       scannedResult: '',
-      verificationMessage: ''
+      verificationMessage: '',
+      html5QrCode: null,
     };
   },
   computed: {
@@ -40,11 +41,11 @@ export default {
       }, 3000);
     },
     startScanning() {
-      const html5QrCode = new Html5Qrcode("reader");
+      this.html5QrCode = new Html5Qrcode("reader");
       const qrCodeSuccessCallback = (decodedText) => {
         this.scannedResult = decodedText;
         this.verifyQRCode(decodedText);
-        html5QrCode.stop().then(() => {
+        this.html5QrCode.stop().then(() => {
           console.log("QR Code scanning stopped.");
         }).catch((err) => {
           console.log("Error stopping QR Code scanner: ", err);
@@ -53,7 +54,7 @@ export default {
 
       const config = { fps: 10, qrbox: 250 };
 
-      html5QrCode.start(
+      this.html5QrCode.start(
         { facingMode: "environment" },
         config,
         qrCodeSuccessCallback
@@ -65,6 +66,15 @@ export default {
   mounted() {
     this.generateTickets(this.$route.params.eventId);
     this.startScanning();
+  },
+  beforeUnmount() {
+    if (this.html5QrCode) {
+      this.html5QrCode.stop().then(() => {
+        console.log("QR Code scanner stopped successfully.");
+      }).catch(err => {
+        console.log("Error stopping QR Code scanner: ", err);
+      });
+    }
   }
 };
 </script>
@@ -78,7 +88,7 @@ export default {
 
 #reader {
   border: 1px solid black;
-  margin-bottom: 10px;  
+  margin-bottom: 10px;
   margin: 0 auto;
 }
 

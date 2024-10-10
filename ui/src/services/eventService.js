@@ -147,7 +147,7 @@ export default {
   },
 
   async updateEvent(newData) {
-    let eventId =  newData.id || newData.get('id');
+    let eventId =  newData.get('id');
     return fetch(`${API_URL}/events/${eventId}`, {
       method: `PUT`,
       headers: {

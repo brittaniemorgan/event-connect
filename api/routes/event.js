@@ -70,7 +70,6 @@ router.put('/:id', authenticateToken, upload.single('image'), async (req, res) =
   try {
     const { title, date, location, category, status } = req.body;
     const image = req.file ? req.file.filename : null;
-    console.log(req.body)
     const [updated] = await Event.update({ title, date, location, status, category, image }, { where: { id: req.params.id } });
     if (updated) {
       const updatedEvent = await Event.findByPk(req.params.id);

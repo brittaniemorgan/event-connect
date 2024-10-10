@@ -33,7 +33,11 @@ export default {
   },
   methods: {
     confirmCancellation() {
-      this.$emit('cancel-event', { ...this.eventData, status: "Cancelled", cancelReason: this.cancellationReason });
+      let formData = new FormData();
+      formData.append('id', this.eventData.id);
+      formData.append('status', 'Cancelled'); 
+      formData.append('cancelReason', this.cancellationReason);
+      this.$emit('cancel-event', formData);
       this.$emit('close');
     }
   }

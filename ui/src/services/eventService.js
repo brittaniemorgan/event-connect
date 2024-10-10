@@ -147,7 +147,8 @@ export default {
   },
 
   async updateEvent(newData) {
-    return fetch(`${API_URL}/events/${newData.get('id')}`, {
+    let eventId =  newData.id || newData.get('id');
+    return fetch(`${API_URL}/events/${eventId}`, {
       method: `PUT`,
       headers: {
         'Authorization': `Bearer ${authService.getToken()}`,

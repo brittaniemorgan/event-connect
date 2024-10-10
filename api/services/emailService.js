@@ -1,4 +1,4 @@
-const { Event, Ticket } = require('../models');
+const { Event, Ticket, User } = require('../models');
 const nodemailer = require('nodemailer');
 
 class EmailService {
@@ -59,17 +59,13 @@ class EmailService {
     }
   }
 
-  async sendEventUpdateEmails(event, data) {
+  async sendNewEventEmail(event) {
     try {
-      const tickets = await Ticket.findAll({ where: { eventId: event.id } });
-      if (!tickets || tickets.length === 0) {
-        throw new Error('Failed to fetch ticket purchases');
-      }
-
-      const recipients = tickets.map(ticket => ticket.email);
-      const subject = `Event Update: ${data.title}`;
+      const organizer = await User.findByPk(event.organizerId);
+      const recipients = [organizer.email];
+      const subject = `Event Added: ${event.title}`;
       const html = `
-        <h1>Update on Event: ${event.title}</h1>
+        <h1>New Event Details: ${event.title}</h1>
         <p>Status: ${event.status}</p>
         <p>New Date: ${event.date ? new Date(event.date).toLocaleString() : 'N/A'}</p>
         <p>Location: ${event.location}</p>
@@ -84,6 +80,83 @@ class EmailService {
       throw error;
     }
   }
+
+  async sendEventUpdateEmail(event) {
+    try {
+      const tickets = await Ticket.findAll({ where: { eventId: event.id } });
+      if (!tickets) {
+        throw new Error('Failed to fetch ticket purchases');
+      }
+      
+      const organizer = await User.findByPk(event.organizerId);
+      const recipients = tickets.map(ticket => ticket.email).concat(organizer?.email);
+      const subject = `Event ${event.status === "Cancelled" ? "Cancellled" : "Update"}: ${event.title}`;
+      const html = `
+        <h1>Event ${event.status === "Cancelled" ? "Event Cancelled" : "Event Update"}: ${event.title}</h1>
+        <p>Status: ${event.status}</p>
+        <p>New Date: ${event.date ? new Date(event.date).toLocaleString() : 'N/A'}</p>
+        <p>Location: ${event.location}</p>
+        <p>Details: ${event.description}</p>
+      `;
+
+      const sendPromises = recipients.map(email => this.sendEmail(email, subject, html));
+      await Promise.all(sendPromises);
+      console.log('Event update emails sent successfully to all ticket holders.');
+    } catch (error) {
+      console.error('Error sending event update emails:', error);
+      throw error;
+    }
+  }
+
+  async sendTicketAddedEmail(ticket) {
+    try {
+      const event = await Event.findByPk(ticket.eventId);
+      if (!event) {
+        throw new Error('Event not found');
+      }
+  
+      const organizer = await User.findByPk(event.organizerId);
+      if (!organizer) {
+        throw new Error('Organizer not found');
+      }
+  
+      const qrCodePath = ticket.qrCode;
+  
+      const subject = `New Tickets Added for ${event.title}`;
+      const html = `
+        <h1>New Tickets Added to Your Event: ${event.title}</h1>
+        <p>Status: ${event.status}</p>
+        <p>Date: ${new Date(event.date).toLocaleString()}</p>
+        <p>Location: ${event.location}</p>
+        <p>Details: ${event.description}</p>
+        <p>New Ticket Added:</strong> ${ticket.ticketType}</p>
+        <p>Total Tickets:</strong> ${ticket.quantity}</p>
+        <p>See the attached QR code for the new tickets:</p>
+        <img src="cid:qrCode" alt="Ticket QR Code" />
+      `;
+  
+      const mailOptions = {
+        from: process.env.EMAIL_FROM,
+        to: organizer.email,
+        subject,
+        html,
+        attachments: [
+          {
+            filename: 'ticket-qr-code.png',
+            path: qrCodePath, 
+            cid: 'qrCode'
+          }
+        ]
+      };
+  
+      await this.transporter.sendMail(mailOptions);
+      console.log('Ticket added email sent to organizer successfully.');
+    } catch (error) {
+      console.error('Error sending ticket added email:', error);
+      throw error;
+    }
+  }
+  
 }
 
 module.exports = new EmailService();

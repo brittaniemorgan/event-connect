@@ -36,6 +36,7 @@ router.post('/', authenticateToken, upload.single('image'), async (req, res) => 
   try {
     const image = req.file ? req.file.filename : null;
     const newEvent = await Event.create({ ...req.body, image: image });
+    emailService.sendNewEventEmail(newEvent);
     res.status(201).json(newEvent);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -69,10 +70,11 @@ router.put('/:id', authenticateToken, upload.single('image'), async (req, res) =
   try {
     const { title, date, location, category, status } = req.body;
     const image = req.file ? req.file.filename : null;
+    console.log(req.body)
     const [updated] = await Event.update({ title, date, location, status, category, image }, { where: { id: req.params.id } });
     if (updated) {
       const updatedEvent = await Event.findByPk(req.params.id);
-      //emailService.sendEventUpdateEmail(updatedEvent, {...req.body, image: image});
+      emailService.sendEventUpdateEmail(updatedEvent);
       res.json(updatedEvent);
     } else {
       res.status(404).json({ error: 'Event not found' });

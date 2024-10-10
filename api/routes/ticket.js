@@ -2,6 +2,7 @@ const express = require('express');
 const qrcode = require('qrcode');
 const { Ticket } = require('../models'); 
 const authenticateToken = require('../middleware/authMiddleware');
+const emailService = require('../services/emailService');
 
 const router = express.Router();
 
@@ -24,6 +25,7 @@ router.post('/', async (req, res) => {
     });    
     newTicket.qrCode = qrCodeDataURL;
     await newTicket.save()
+    emailService.sendTicketAddedEmail(newTicket);
     res.status(201).json(newTicket);
   } catch (error) {
     res.status(500).json({ error: error.message });

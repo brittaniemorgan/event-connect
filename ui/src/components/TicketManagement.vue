@@ -55,23 +55,23 @@
     </div>
 
     <!-- Edit Ticket Modal -->
-    <div v-if="showEditModal" class="modal">
+    <div v-if="showEditModal" class="edit-modal">
       <div class="modal-content">
         <h3>Edit Ticket: {{ selectedEvent.title }} {{ selectedTicket.ticketType }}</h3>
         <form @submit.prevent="updateTicket">
           <div class="form-group">
-            <label for="cost">Ticket Type:</label>
-            <input v-model="selectedTicket.ticketType" required />
+            <label for="edit-type">Ticket Type:</label>
+            <input v-model="selectedTicket.ticketType" id="edit-type" required />
           </div>
 
           <div class="form-group">
-            <label for="cost">Ticket Cost:</label>
-            <input v-model.number="selectedTicket.price" type="number" placeholder="Price" required />
+            <label for="edit-cost">Ticket Cost:</label>
+            <input v-model.number="selectedTicket.price" type="number" placeholder="Price" id="edit-cost" required />
           </div>
 
           <div class="form-group">
-            <label for="cost">Ticket Quantity:</label>
-            <input v-model.number="selectedTicket.quantity" type="number" placeholder="Quantity" required />
+            <label for="edit-quantity">Ticket Quantity:</label>
+            <input v-model.number="selectedTicket.quantity" type="number" placeholder="Quantity" id="edit-quantity" required />
           </div>
           <div class="button-group">
             <button type="submit" class="btn-primary">Update</button>
@@ -82,7 +82,7 @@
     </div>
 
     <!-- QR Code Modal -->
-    <div v-if="showQRCode" class="modal">
+    <div v-if="showQRCode" class="qr-modal">
       <div class="modal-content">
         <h3>QR Code for {{ selectedEvent.title }} {{ selectedTicket.ticketType }}</h3>
         <img :src="selectedTicket.qrCode" alt="Ticket QR Code" />
@@ -91,7 +91,7 @@
     </div>
 
     <!-- Delete Ticket Confirmation Modal -->
-    <div v-if="showDeleteModal" class="modal">
+    <div v-if="showDeleteModal" class="delete-modal">
       <div class="modal-content">
         <h3>Are you sure you want to delete this ticket?</h3>
         <p>This action cannot be undone.</p>

@@ -16,12 +16,22 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     qrCode: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
     },
     ticketType: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    price: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0
+    },
   });
 
   Ticket.associate = function(models) {

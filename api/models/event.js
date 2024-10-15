@@ -31,7 +31,12 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.STRING,
       allowNull: false
-    }
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: 'No description provided'
+    },
   });
 
   return Event;

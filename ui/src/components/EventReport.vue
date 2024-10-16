@@ -131,7 +131,7 @@ export default {
       this.error = null;
 
       try {
-        const response = await fetch(`http://localhost:3000/v1/reports/${this.selectedEventId}`);
+        const response = await fetch(`${process.env.VUE_APP_API_URL}/reports/${this.selectedEventId}`);
         if (!response.ok) throw new Error('Failed to fetch report');
         this.report = await response.json();
         this.prepareChart();

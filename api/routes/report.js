@@ -42,7 +42,7 @@ async function generateEventReport(eventId) {
   const topUsers = await PurchasedTicket.findAll({
     attributes: [
       'email',
-      [Sequelize.fn('SUM', Sequelize.col('quantity'),), 'ticketTotal']
+      [Sequelize.fn('SUM', Sequelize.col('PurchasedTicket.quantity'),), 'ticketTotal']
     ],
     include: [{
       model: Ticket,
@@ -74,7 +74,7 @@ async function generateEventReport(eventId) {
     totalRevenue: totalRevenue,
     ticketsSoldPerDay,
     topUsers: topUsers.map(user => ({
-      name: ` ${user.firstName} ${user.lastName}`,
+      name: ` ${user?.firstName} ${user?.lastName}`,
       email: user.email,
       ticketCount: user.dataValues.ticketCount,
     })),
@@ -84,8 +84,8 @@ async function generateEventReport(eventId) {
       recentReviews: reviews.slice(0, 5).map(review => ({
         rating: review.rating,
         text: review.text,
-        userName: ` ${review.User.firstName} ${review.User.lastName}`,
-        userEmail: review.User.email
+        userName: ` ${review.User?.firstName} ${review.User?.lastName}`,
+        userEmail: review.User?.email
       }))
     },
   };
